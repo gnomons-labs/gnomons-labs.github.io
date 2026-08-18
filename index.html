@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gnomons - Embedded Software, IoT & Edge AI Engineering</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'Monaco', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-brand-100 selection:text-brand-900 flex flex-col min-h-screen">
+
+    <!-- Top Navigation / Brand Header -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="group flex items-center gap-3">
+                <img src="logo.png" alt="Gnomons logo" class="w-9 h-9 object-contain">
+                <img src="wordmark.png" alt="Gnomons" class="h-9 object-contain">
+            </a>
+            
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-600">
+                <a href="#philosophy" class="hover:text-brand-700 transition-colors">Philosophy</a>
+                <a href="#pillars" class="hover:text-brand-700 transition-colors">Services</a>
+                <a href="#projects" class="hover:text-brand-700 transition-colors">Featured R&D</a>
+                <a href="#stack" class="hover:text-brand-700 transition-colors">Capabilities</a>
+                <a href="#engagement" class="hover:text-brand-700 transition-colors">Engagement</a>
+                <a href="#team" class="hover:text-brand-700 transition-colors">Team</a>
+                <a href="#offices" class="hover:text-brand-700 transition-colors">Offices</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <a href="#contact" class="text-sm font-semibold text-brand-700 border border-brand-600 hover:bg-brand-50 px-4 py-2 rounded transition-all">
+                    Get in Touch
+                </a>
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-600 hover:text-brand-700 transition-colors p-1" aria-label="Toggle menu">
+                    <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-100 bg-white">
+            <nav class="max-w-5xl mx-auto px-6 py-4 flex flex-col gap-4 text-sm font-medium text-slate-600">
+                <a href="#philosophy" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Philosophy</a>
+                <a href="#pillars" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Services</a>
+                <a href="#projects" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Featured R&D</a>
+                <a href="#stack" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Capabilities</a>
+                <a href="#engagement" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Engagement</a>
+                <a href="#team" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Team</a>
+                <a href="#offices" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Offices</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="max-w-5xl mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 text-xs font-mono font-medium text-brand-800 mb-6">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    Available for Consulting & Development
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 tracking-tight leading-[1.1] mb-6">
+                    Reliable Embedded Software, IoT & Edge AI
+                </h1>
+                
+                <p class="text-lg md:text-xl text-slate-600 leading-relaxed font-normal mb-10 max-w-2xl">
+                    We build secure IoT firmware and deploy low-latency, on-device machine learning to <strong class="text-slate-900 font-semibold">constrained silicon platforms</strong>—with our deepest expertise across leading hardware ecosystems, including Renesas, NVIDIA, and Raspberry Pi.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                    <a href="mailto:services@gnomons.com?subject=Embedded%20Software%20Inquiry" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded text-sm transition-all shadow-md shadow-brand-600/20">
+                        <span>Email Us About Your Project</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                    
+                    <button onclick="copyEmail()" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-50 hover:bg-brand-50 text-slate-700 hover:text-brand-800 font-mono text-xs rounded border border-slate-200 hover:border-brand-300 transition-all">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        <span id="copy-text">services@gnomons.com</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-100">
+
+        <!-- Company Identity & Philosophy Section -->
+        <section id="philosophy" class="max-w-5xl mx-auto px-6 py-16">
+            <div class="grid md:grid-cols-12 gap-8 items-stretch">
+                <!-- Name Etymology Box -->
+                <div class="md:col-span-5 p-6 rounded-lg bg-brand-50/60 border border-brand-100 flex flex-col justify-between">
+                    <div>
+                        <div class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-3">Origin & Meaning</div>
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <span class="text-2xl font-bold text-slate-900 font-mono">Gnomons</span>
+                            <span class="text-xs font-mono text-slate-500">/ˈnoʊ.mɒns/</span>
+                        </div>
+                        <p class="text-xs font-mono text-slate-700 leading-relaxed mb-4">
+                            Derived from Greek <strong class="text-slate-900 font-semibold">γνώμων (gnōmōn)</strong>, literally meaning <em class="italic">"one who knows or examines"</em>.
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-brand-200/80 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded bg-brand-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <ellipse cx="12" cy="18" rx="8" ry="3" stroke-width="2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18V5l4 6" />
+                            </svg>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Like the gnomon—the pillar of a sundial that casts the shadow to reveal time and direction—we provide the architectural vision and technical clarity that guide hardware forward.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Vision Statement Box (Matching Green Theme Image) -->
+                <div class="md:col-span-7 p-8 rounded-lg bg-emerald-500 text-slate-950 flex flex-col justify-between relative overflow-hidden shadow-md">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white/20 border border-white/30 text-slate-950 font-mono text-xs font-bold mb-5">
+                            Gnomons Identity : Human-Centric
+                        </div>
+
+                        <h3 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-950 mb-3 leading-snug">
+                            革新的な技術で「人を中心とした」スマートな社会を創造する
+                        </h3>
+
+                        <p class="text-slate-900 text-base font-semibold leading-relaxed mb-4">
+                            To make smart Human-Centric society enabled by innovative technologies.
+                        </p>
+                    </div>
+
+                    <p class="text-xs text-slate-900/80 leading-relaxed font-mono border-t border-slate-950/20 pt-4 font-medium">
+                        Technology serves human capability. We build dependable, low-latency embedded intelligence and firmware designed to operate quietly, efficiently, and securely in human environments.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-100">
+
+        <!-- Core Pillars Section -->
+        <section id="pillars" class="max-w-5xl mx-auto px-6 py-20">
+            <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-12">Core Focus Areas</h2>
+            
+            <div class="grid md:grid-cols-3 gap-10">
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded bg-brand-50 text-brand-700 border border-brand-100 flex items-center justify-center font-mono text-sm font-bold mb-4">01</div>
+                    <h3 class="text-xl font-bold text-slate-900">Connected Device Firmware</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Wireless connectivity firmware. Secure provisioning, OTA update mechanisms, and cloud connectivity.
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded bg-brand-50 text-brand-700 border border-brand-100 flex items-center justify-center font-mono text-sm font-bold mb-4">02</div>
+                    <h3 class="text-xl font-bold text-slate-900">TinyML & Edge Intelligence</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Model optimization, int8 quantization, and efficient pipeline deployment for microcontrollers. Bringing real-time inference, vision processing, and anomaly detection directly to the edge.
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded bg-brand-50 text-brand-700 border border-brand-100 flex items-center justify-center font-mono text-sm font-bold mb-4">03</div>
+                    <h3 class="text-xl font-bold text-slate-900">Silicon-Level Firmware</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Deep architectural specialization across Renesas RA, RZ, and RX families. End-to-end expertise in Renesas Flexible Software Package (FSP), e² studio, and production-ready custom BSPs.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects & R&D -->
+        <section id="projects" class="bg-brand-50/40 border-y border-brand-100/60 py-20">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
+                    <div>
+                        <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">Engineering in Practice</h2>
+                        <h3 class="text-3xl font-bold text-slate-900">Featured R&D</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 max-w-xs">Real-world engineering case studies showcasing hardware constraints and solutions.</p>
+                </div>
+
+                <p class="text-xs text-slate-400 font-mono mb-12">Client and product names are withheld to protect confidentiality — all engagements are covered under NDA.</p>
+
+                <div class="grid gap-8">
+                    <!-- Case Study 1 -->
+                    <div class="bg-white p-8 rounded-lg border border-slate-200/80 shadow-sm hover:border-brand-300 transition-all">
+                        <div class="flex flex-wrap items-center gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Renesas EK-RA8P1</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">TinyML / CMSIS-NN</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Memory Budgeting</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3">Embedded Vision & TinyML Memory Optimization</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            Designed memory-constrained embedded vision pipelines using the Cortex-M85 based Renesas EK-RA8P1. Resolved strict SRAM and Flash ceilings by engineering double-buffered zero-copy DMA capture pipelines alongside TFLM workspace allocations for high-efficiency image inference.
+                        </p>
+                        <div class="pt-4 border-t border-slate-100 flex items-center gap-6 text-xs font-mono text-slate-500">
+                            <div><strong class="text-brand-700 font-semibold">Target:</strong> Sub-2MB SRAM Footprint</div>
+                            <div><strong class="text-brand-700 font-semibold">Result:</strong> Real-time zero-copy pipeline</div>
+                        </div>
+                    </div>
+
+                    <!-- Case Study 2 -->
+                    <div class="bg-white p-8 rounded-lg border border-slate-200/80 shadow-sm hover:border-brand-300 transition-all">
+                        <div class="flex flex-wrap items-center gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Hardware Root-of-Trust</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">STRIDE Modeling</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Model Security</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3">Secure Embedded AI & On-Device Vision Defense</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            Engineered next-generation firmware architecture with security as a core design principle. Implemented a secure Embedded Face Detection framework on Renesas silicon, applying STRIDE threat modeling and hardware root-of-trust boundaries to safeguard dynamic memory and proprietary model weights against physical and remote extraction.
+                        </p>
+                        <div class="pt-4 border-t border-slate-100 flex items-center gap-6 text-xs font-mono text-slate-500">
+                            <div><strong class="text-brand-700 font-semibold">Security Model:</strong> CIA Triad & Root of Trust</div>
+                            <div><strong class="text-brand-700 font-semibold">Scope:</strong> Secure Boot & Execution</div>
+                        </div>
+                    </div>
+
+                    <!-- Case Study 3 -->
+                    <div class="bg-white p-8 rounded-lg border border-slate-200/80 shadow-sm hover:border-brand-300 transition-all">
+                        <div class="flex flex-wrap items-center gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Renesas RA8 Series</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Custom BSP</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Solution Architecture</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3">Advanced Features R&D for Next-Gen Silicon</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            Executed multi-phase architecture research and development evaluating cutting-edge peripherals, DSP extensions, and Helium/NPU acceleration on RA8 Series microcontrollers. Delivered complete verification test suites, architectural whitepapers, and production-grade BSP modules for enterprise deployment.
+                        </p>
+                        <div class="pt-4 border-t border-slate-100 flex items-center gap-6 text-xs font-mono text-slate-500">
+                            <div><strong class="text-brand-700 font-semibold">Focus:</strong> Multi-phase RA8 Peripheral & DSP R&D</div>
+                            <div><strong class="text-brand-700 font-semibold">Deliverables:</strong> Firmware, Test Suites & Architecture Docs</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Capabilities Matrix -->
+        <section id="stack" class="max-w-5xl mx-auto px-6 py-20">
+            <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-10">Technical Capabilities Matrix</h2>
+            
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="p-6 rounded border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">Microcontrollers & SoCs</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Renesas RA / RZ / RX</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>ARM Cortex-M / Cortex-A</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Raspberry Pi Pico / Raspberry Pi</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>NVIDIA Jetson Nano / Orin / AGX</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">Edge AI & Tools</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>TensorFlow Lite Micro</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Renesas RUHMI / e² studio</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>CMSIS-NN / CMSIS-DSP</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Model Quantization</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">Protocols & Connectivity</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>MQTT / Wi-Fi</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>SPI / I2C</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>MIPI CSI-2 / Parallel Camera Interfaces</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>UART / Ethernet</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>TLS / Secure Boot / OTA</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>ARM TrustZone / Renesas RSIP</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">RTOS & Frameworks</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Renesas FSP</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>FreeRTOS</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Zephyr RTOS</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>µT-Kernel</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Embedded Linux</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Bare-Metal Drivers</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">Languages</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>C (C99 / C11)</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>C++ (Modern C++17/20)</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Python (Tooling & AI)</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Assembly</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">Hardware & Lab</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>JTAG / SWD Debugging</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Logic Analyzer</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Power Profiling</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Memory Footprint Profiling</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Embedded CI/CD Hardware Loops</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Approach & Philosophy -->
+        <section id="engagement" class="bg-slate-900 text-white py-20">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="max-w-2xl mb-16">
+                    <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-500 mb-3">Our Engineering Philosophy</h2>
+                    <h3 class="text-3xl font-bold tracking-tight mb-4">Hardware-Aware Intelligence</h3>
+                    <p class="text-slate-300 text-base leading-relaxed">
+                        We bridge the gap between heavy algorithms and constrained silicon. Whether migrating legacy codebases to modern Renesas MCUs or deploying real-time ML at the edge, we engineer code that strictly respects memory, thermal, and energy limits.
+                    </p>
+                </div>
+
+                <div class="border-t border-slate-800 pt-12">
+                    <h4 class="text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 mb-8">How We Engage</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-8">Whether it's a single deliverable or an ongoing engagement, we scope to match.</p>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="p-6 bg-slate-800/60 rounded border border-slate-700/60">
+                            <span class="text-xs font-mono text-brand-500 font-bold block mb-2">STEP 01</span>
+                            <h5 class="font-bold text-lg mb-2">Initial Technical Review</h5>
+                            <p class="text-slate-400 text-sm leading-relaxed">Send us your project brief, hardware schematic, or MCU targets directly via email.</p>
+                        </div>
+                        <div class="p-6 bg-slate-800/60 rounded border border-slate-700/60">
+                            <span class="text-xs font-mono text-brand-500 font-bold block mb-2">STEP 02</span>
+                            <h5 class="font-bold text-lg mb-2">Scope & Architecture</h5>
+                            <p class="text-slate-400 text-sm leading-relaxed">We establish memory budgets, performance KPIs, deliverables, and milestone schedules.</p>
+                        </div>
+                        <div class="p-6 bg-slate-800/60 rounded border border-slate-700/60">
+                            <span class="text-xs font-mono text-brand-500 font-bold block mb-2">STEP 03</span>
+                            <h5 class="font-bold text-lg mb-2">Execution & Delivery</h5>
+                            <p class="text-slate-400 text-sm leading-relaxed">Clean, testable, fully-documented code delivered straight to your target repository, with extended support and maintenance available beyond delivery.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section id="team" class="max-w-5xl mx-auto px-6 py-20">
+            <div class="mb-12">
+                <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">Who You'll Work With</h2>
+                <h3 class="text-3xl font-bold text-slate-900">Our Team</h3>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-6 rounded-lg border border-slate-100 bg-slate-50/50">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-100 text-brand-700 flex items-center justify-center font-mono text-sm font-bold mb-4">JS</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1">Jun Sato <span class="text-sm font-normal text-slate-400 font-mono">(佐藤潤)</span></h4>
+                    <div class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">Strategy</div>
+                    <p class="text-slate-600 text-sm leading-relaxed">Sato leads Gnomons' market strategy, technology consulting, and partnership development from the Tokyo headquarters, connecting the team's engineering capabilities with client opportunities across Japan's embedded, IoT, and edge AI sectors.</p>
+                </div>
+                <div class="p-6 rounded-lg border border-slate-100 bg-slate-50/50">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-100 text-brand-700 flex items-center justify-center font-mono text-sm font-bold mb-4">TT</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1">Tu Thai <span class="text-sm font-normal text-slate-400 font-mono">(トゥ・タイ)</span></h4>
+                    <div class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">Architecture</div>
+                    <p class="text-slate-600 text-sm leading-relaxed">Tu owns solution architecture and delivery strategy at Gnomons, translating client requirements into buildable embedded systems across the Tokyo and Ho Chi Minh City offices, working closely with clients from initial scoping through delivery and beyond.</p>
+                </div>
+                <div class="p-6 rounded-lg border border-slate-100 bg-slate-50/50">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-100 text-brand-700 flex items-center justify-center font-mono text-sm font-bold mb-4">DP</div>
+                    <h4 class="text-lg font-bold text-slate-900 mb-1">Duy Phan <span class="text-sm font-normal text-slate-400 font-mono">(ズイ・ファン)</span></h4>
+                    <div class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">Firmware</div>
+                    <p class="text-slate-600 text-sm leading-relaxed">Duy leads firmware design and hands-on implementation across Renesas silicon platforms, with deep expertise in RTOS design, memory-constrained firmware, and TinyML deployment, delivering production-grade code from prototype through deployment.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Global Offices Section -->
+        <section id="offices" class="max-w-5xl mx-auto px-6 py-20 border-b border-slate-100">
+            <div class="mb-12">
+                <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">Global Presence</h2>
+                <h3 class="text-3xl font-bold text-slate-900">Our Offices</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Japan Office -->
+                <div class="p-8 rounded-lg border border-slate-200 bg-slate-50/50 hover:border-brand-300 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-1.5 py-0.5 rounded bg-brand-50 border border-brand-200/60 text-brand-700 font-mono text-[10px] font-bold">JP</span>
+                        <span class="text-xs font-mono font-bold uppercase tracking-wider text-brand-800">Japan Headquarters</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">Gnomons Co., Ltd.</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed font-mono mb-4">
+                        3-13-5-302 Osaki, Shinagawa-ku<br>
+                        Tokyo 141-0032, Japan
+                    </p>
+                    <p class="text-xs font-mono text-slate-500 mb-6">
+                        <strong class="text-slate-700">Tel:</strong> (+81) 3 6417 9103<br>
+                        <strong class="text-slate-700">Email:</strong> services@gnomons.com
+                    </p>
+                    <div class="pt-4 border-t border-slate-200/80 text-xs font-mono text-slate-500 flex items-center justify-between">
+                        <span>Head Office & Strategy</span>
+                        <span class="text-brand-700 font-medium">Tokyo, JP</span>
+                    </div>
+                </div>
+
+                <!-- Vietnam Office -->
+                <div class="p-8 rounded-lg border border-slate-200 bg-slate-50/50 hover:border-brand-300 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-1.5 py-0.5 rounded bg-brand-50 border border-brand-200/60 text-brand-700 font-mono text-[10px] font-bold">VN</span>
+                        <span class="text-xs font-mono font-bold uppercase tracking-wider text-brand-800">Vietnam Development Center</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">Gnomons Vietnam Co., Ltd.</h4>
+                    <p class="text-sm text-slate-600 leading-relaxed font-mono mb-4">
+                        Suite 320, 3rd Floor, Indochina Park Tower<br>
+                        4 Nguyen Dinh Chieu, Tan Dinh Ward<br>
+                        Ho Chi Minh City, Vietnam
+                    </p>
+                    <p class="text-xs font-mono text-slate-500 mb-6">
+                        <strong class="text-slate-700">Tel:</strong> (+84) 28 6288 2040<br>
+                        <strong class="text-slate-700">Email:</strong> info@gnomons.com
+                    </p>
+                    <div class="pt-4 border-t border-slate-200/80 text-xs font-mono text-slate-500 flex items-center justify-between">
+                        <span>R&D & Engineering Hub</span>
+                        <span class="text-brand-700 font-medium">Ho Chi Minh City, VN</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-400 font-mono mt-8 text-center sm:text-left">Renesas distributors and channel partners — we welcome partnership inquiries; reach out anytime.</p>
+        </section>
+
+        <!-- Final CTA / Contact Section -->
+        <section id="contact" class="max-w-5xl mx-auto px-6 py-24 text-center">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-4">Start A Conversation</h2>
+                <h3 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-6">Ready to Build Your Next Edge System?</h3>
+                
+                <p class="text-slate-600 leading-relaxed mb-10">
+                    We are currently accepting new consulting engagements and software development projects. Share your hardware specs, timeline, and core requirements with us.
+                </p>
+
+                <div class="bg-brand-50/50 border border-brand-200/80 p-8 rounded-lg mb-8 inline-block w-full max-w-lg shadow-sm">
+                    <div class="text-xs font-mono text-brand-800 mb-2 uppercase tracking-wide font-semibold">Direct Email Inquiry</div>
+                    <a href="mailto:services@gnomons.com?subject=Embedded%20Software%20Inquiry" class="text-2xl sm:text-3xl font-bold text-slate-900 hover:text-brand-600 transition-colors break-all">
+                        services@gnomons.com
+                    </a>
+                    <div class="mt-4 pt-4 border-t border-brand-200/60 flex items-center justify-center gap-2 text-xs text-brand-800">
+                        <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>We'll get back to you shortly</span>
+                    </div>
+                </div>
+
+                <div>
+                    <a href="mailto:services@gnomons.com?subject=Embedded%20Software%20Inquiry" class="inline-flex items-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded text-base transition-all shadow-md shadow-brand-600/20">
+                        <span>Send Mail Directly</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-100 bg-white py-12">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <div>
+                    &copy; 2026 Gnomons. Est. 2013. All rights reserved. Reliable Embedded & Edge AI Engineering.
+                </div>
+                <div class="flex items-center gap-6 font-mono text-brand-800">
+                    <span>Constrained-Silicon Specialists</span>
+                    <span>Built with Cyber Resilience in Mind</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-400 text-center sm:text-left">
+                Renesas and the Renesas logo are trademarks of Renesas Electronics Corporation. All other product and company names are trademarks of their respective owners.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+            document.getElementById('menu-icon-open').classList.toggle('hidden');
+            document.getElementById('menu-icon-close').classList.toggle('hidden');
+        }
+        function closeMobileMenu() {
+            document.getElementById('mobile-menu').classList.add('hidden');
+            document.getElementById('menu-icon-open').classList.remove('hidden');
+            document.getElementById('menu-icon-close').classList.add('hidden');
+        }
+        function copyEmail() {
+            const email = "services@gnomons.com";
+            navigator.clipboard.writeText(email).then(() => {
+                const copyText = document.getElementById('copy-text');
+                const originalText = copyText.innerText;
+                copyText.innerText = "Copied to Clipboard!";
+                setTimeout(() => {
+                    copyText.innerText = originalText;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
