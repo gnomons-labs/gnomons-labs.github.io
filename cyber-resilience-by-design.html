@@ -1,0 +1,714 @@
+<title>Cyber Resilience by Design</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --paper:#ffffff;
+  --panel:#f8fafc;      /* slate-50 */
+  --ink:#0f172a;        /* slate-900 */
+  --ink-soft:#475569;   /* slate-600 */
+  --ink-mute:#64748b;   /* slate-500 */
+  --ink-faint:#94a3b8;  /* slate-400 */
+  --line:#e2e8f0;       /* slate-200 */
+  --line-soft:#f1f5f9;  /* slate-100 */
+  --brand:#16a34a;      /* green-600 */
+  --brand-dark:#15803d; /* green-700 */
+  --brand-darker:#166534;/* green-800 */
+  --brand-soft:#dcfce7; /* green-100 */
+  --brand-tint:#f0fdf4; /* green-50 */
+  --brand-line:#bbf7d0; /* green-200 */
+  --warn:#d97706;       /* amber-600 */
+  --warn-dark:#b45309;  /* amber-700 */
+  --warn-soft:#fef3c7;  /* amber-100 */
+  --warn-tint:#fffbeb;  /* amber-50 */
+  --shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 20px -10px rgba(15,23,42,0.10);
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height:1.6;
+}
+::selection{ background:var(--brand-soft); color:var(--brand-darker); }
+a{ color:inherit; }
+
+.wrap{ max-width:1040px; margin:0 auto; padding:0 24px; }
+
+/* Back link */
+.back{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-mute);
+  text-decoration:none; padding:22px 0 0;
+}
+.back:hover{ color:var(--brand-dark); }
+
+/* Hero */
+.hero{
+  display:grid; grid-template-columns:1.15fr 0.85fr; gap:44px;
+  align-items:center; padding:40px 0 56px;
+  border-bottom:1px solid var(--line-soft);
+}
+@media (max-width:760px){ .hero{ grid-template-columns:1fr; } }
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--brand-dark);
+  background:var(--brand-tint); border:1px solid var(--brand-line);
+  border-radius:99px; padding:5px 12px 5px 10px; margin-bottom:18px;
+}
+.eyebrow .dot{ width:7px; height:7px; border-radius:99px; background:var(--brand); }
+h1{
+  font-family:'Inter', sans-serif; font-weight:800; letter-spacing:-0.02em;
+  font-size:clamp(32px,4.6vw,48px); line-height:1.1; margin:0 0 18px;
+  color:var(--ink); text-wrap:balance;
+}
+.hero p{ font-size:17px; color:var(--ink-soft); margin:0; line-height:1.65; }
+
+.diagram-box{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  box-shadow:var(--shadow); padding:20px 18px 16px;
+}
+.diagram-box svg{ width:100%; height:auto; display:block; }
+.diagram-cap{
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-mute);
+  text-align:center; margin-top:10px; letter-spacing:0.01em;
+}
+
+/* section rhythm */
+section{ padding:52px 0; border-bottom:1px solid var(--line-soft); }
+section:last-of-type{ border-bottom:none; }
+.section-label{
+  font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-dark);
+  margin-bottom:8px;
+}
+h2{
+  font-family:'Inter', sans-serif; font-weight:700; letter-spacing:-0.01em;
+  font-size:27px; margin:0 0 16px; text-wrap:balance; color:var(--ink);
+}
+.lede{ font-size:15.5px; color:var(--ink-soft); margin:0 0 8px; }
+
+/* Why band */
+.why-band{
+  background:var(--brand-tint); border:1px solid var(--brand-line);
+  border-radius:10px; padding:28px 30px; margin:48px 0;
+}
+.why-band p{ font-size:15px; color:var(--ink); margin:0; }
+.why-band strong{ color:var(--brand-darker); }
+
+/* Definition panel */
+.define{
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:10px; padding:26px 30px; margin-top:40px;
+  display:flex; flex-direction:column; gap:12px;
+}
+.define-label{
+  font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-dark);
+}
+.define p{ font-size:14.5px; color:var(--ink); margin:0; }
+.define p.muted{ color:var(--ink-soft); }
+.define strong{ color:var(--brand-darker); }
+
+/* Capability cards */
+.cards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+@media (max-width:680px){ .cards{ grid-template-columns:1fr; } }
+.card{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  padding:24px 24px 22px; box-shadow:var(--shadow);
+  display:flex; flex-direction:column; gap:11px; position:relative;
+  transition:border-color .15s ease;
+}
+.card:hover{ border-color:var(--brand-line); }
+.card.dev:hover{ border-color:#fde68a; }
+.card h3{
+  font-family:'Inter', sans-serif; font-weight:700; font-size:18px; margin:0;
+  line-height:1.32; color:var(--ink);
+}
+.card p{ font-size:14px; color:var(--ink-soft); margin:0; }
+.card .why-line{
+  font-size:13px; color:var(--brand-darker); font-weight:600;
+  padding-top:8px; border-top:1px solid var(--line-soft); margin-top:2px;
+}
+.card.dev .why-line{ color:var(--warn-dark); }
+.card .tech-note{
+  font-family:'JetBrains Mono', monospace; font-size:11.5px;
+  color:var(--ink-mute); line-height:1.5;
+}
+.badge{
+  position:absolute; top:22px; right:22px;
+  font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:600;
+  letter-spacing:0.03em; padding:3px 9px; border-radius:99px;
+  background:var(--brand-soft); color:var(--brand-darker);
+}
+.card.dev .badge{ background:var(--warn-soft); color:var(--warn-dark); }
+.card .provision{
+  font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:600;
+  letter-spacing:0.03em; text-transform:uppercase; color:var(--brand-dark);
+  background:var(--brand-tint); border:1px solid var(--brand-line);
+  width:fit-content; padding:3px 9px; border-radius:5px; margin-top:1px;
+}
+.card.dev .provision{ color:var(--warn-dark); background:var(--warn-tint); border-color:#fde68a; }
+.card .chips-label{
+  font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:600;
+  letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-faint); margin-top:5px;
+}
+.chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.chip{
+  font-family:'JetBrains Mono', monospace; font-weight:500;
+  font-size:12px; padding:4px 10px; border-radius:5px;
+  background:var(--brand-tint); color:var(--brand-darker);
+  border:1px solid var(--brand-line);
+}
+.chip.dim{ background:transparent; border-color:var(--line); color:var(--ink-mute); }
+
+/* Full coverage map */
+.map-group{ margin-bottom:24px; }
+.map-group:last-child{ margin-bottom:0; }
+.map-group h4{
+  font-size:11.5px; text-transform:uppercase; letter-spacing:0.07em;
+  color:var(--ink-mute); margin:0 0 4px; font-weight:700;
+  display:flex; align-items:baseline; gap:8px;
+  font-family:'JetBrains Mono', monospace;
+}
+.map-group h4 .std{ font-weight:400; opacity:0.75; }
+.map-row{
+  display:grid; grid-template-columns:104px 1fr; align-items:center;
+  gap:14px; padding:11px 2px; border-bottom:1px solid var(--line-soft);
+}
+.map-group .map-row:last-child{ border-bottom:none; }
+.pill{
+  font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:500;
+  letter-spacing:0.02em; padding:3px 10px; border-radius:99px;
+  text-align:center; width:fit-content;
+}
+.pill.strong{ background:var(--brand-soft); color:var(--brand-darker); }
+.pill.partial{ background:var(--warn-soft); color:var(--warn-dark); }
+.pill.open{ background:var(--panel); color:var(--ink-mute); border:1px solid var(--line); }
+.map-row .desc{ font-size:13.5px; color:var(--ink); }
+.map-row .desc .why{ color:var(--ink-mute); }
+
+/* progress meter */
+.meter-wrap{ display:flex; flex-direction:column; gap:14px; }
+.meter{ display:flex; gap:4px; }
+.seg{ height:9px; flex:1; border-radius:3px; background:var(--line-soft); }
+.seg.strong{ background:var(--brand); }
+.seg.partial{ background:var(--warn); }
+.meter-legend{ display:flex; gap:20px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-soft); }
+.meter-legend .dot{ width:8px; height:8px; border-radius:2px; display:inline-block; margin-right:6px; }
+.meter-legend .strong-dot{ background:var(--brand); }
+.meter-legend .partial-dot{ background:var(--warn); }
+.meter-legend .open-dot{ background:var(--panel); border:1px solid var(--line); }
+.meter-legend .dim-dot{ background:transparent; border:1.5px solid var(--ink-faint); }
+.meter-legend .planned-dot{ background:transparent; border:1.5px dashed var(--ink-faint); }
+
+/* Architecture diagram */
+.arch-wrap{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  padding:18px 18px 6px; box-shadow:var(--shadow); overflow-x:auto; margin:0;
+}
+.arch-wrap svg{ width:100%; height:auto; display:block; min-width:700px; }
+.arch-wrap figcaption{
+  font-size:12.5px; color:var(--ink-mute); padding:10px 4px 14px;
+}
+.band{ fill:none; stroke:var(--line); stroke-width:1.2; }
+.band-label{
+  font-family:'JetBrains Mono', monospace; font-size:9.5px; font-weight:600;
+  letter-spacing:0.06em; fill:var(--ink-mute); text-transform:uppercase;
+}
+.blk-built{ fill:var(--brand-soft); stroke:var(--brand); stroke-width:1.3; }
+.blk-progress{ fill:var(--warn-soft); stroke:var(--warn); stroke-width:1.3; }
+.blk-dim{ fill:transparent; stroke:#cbd5e1; stroke-width:1.3; }
+.blk-planned{ fill:transparent; stroke:var(--ink-faint); stroke-width:1.2; stroke-dasharray:4 3; }
+.blk-hw{ fill:var(--panel); stroke:var(--line); stroke-width:1.2; }
+.blk-title{
+  font-family:'Inter', sans-serif; font-weight:700;
+  font-size:12.5px; fill:var(--ink); text-anchor:middle;
+}
+.blk-title-hw{
+  font-family:'JetBrains Mono', monospace; font-weight:600; font-size:10px;
+  fill:var(--ink); text-anchor:middle; letter-spacing:0.01em;
+}
+.blk-sub{ font-family:'Inter', sans-serif; font-size:9px; fill:var(--ink-mute); text-anchor:middle; }
+.flow{ fill:none; stroke:#94a3b8; stroke-width:1.3; }
+.flow-label{ font-family:'JetBrains Mono', monospace; font-size:8.5px; fill:var(--ink-mute); }
+.gate-fill{ fill:var(--brand-tint); stroke:var(--brand); stroke-width:1.2; }
+.gate-label{
+  font-family:'JetBrains Mono', monospace; font-size:9.5px; font-weight:600;
+  letter-spacing:0.05em; fill:var(--brand-darker); text-anchor:middle; text-transform:uppercase;
+}
+
+/* CTA (matches the site's real contact block) */
+.cta{
+  background:var(--brand-tint); border:1px solid var(--brand-line);
+  border-radius:10px; padding:44px 40px; margin:0 0 56px; text-align:center;
+}
+.cta .section-label{ justify-content:center; display:block; }
+.cta h2{ max-width:none; margin:0 auto 14px; font-size:28px; }
+.cta p{ color:var(--ink-soft); font-size:15px; margin:0 auto 26px; }
+.cta-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--brand); color:#fff; font-weight:600; font-size:15px;
+  padding:13px 26px; border-radius:6px; text-decoration:none;
+  box-shadow:0 8px 20px -8px rgba(22,163,74,0.45);
+  transition:background .15s ease;
+}
+.cta-btn:hover{ background:var(--brand-dark); }
+</style>
+
+<div class="wrap">
+  <a class="back" href="https://www.gnomons.com/">&larr; gnomons.com</a>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow"><span class="dot"></span>Capability Brief &middot; Renesas RA8P1</div>
+      <h1>Built with cyber resilience in mind.</h1>
+      <p>
+        We design and build firmware against EN 303 645 — the
+        baseline that Japan's JC-STAR label and the EU's Cyber
+        Resilience Act both build on — on a modern Arm Cortex-M85
+        microcontroller. Here's what we've already built, and what
+        we can bring to your product next.
+      </p>
+    </div>
+    <div class="diagram-box">
+      <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="24" width="122" height="132" rx="10" fill="var(--brand-tint)" stroke="var(--brand)" stroke-width="1.4"/>
+        <text x="69" y="18" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="var(--brand-darker)" letter-spacing="0.5">PROTECTED ZONE</text>
+        <rect x="30" y="58" width="78" height="64" rx="6" fill="none" stroke="var(--brand)" stroke-width="1.3" stroke-dasharray="3 3"/>
+        <circle cx="69" cy="90" r="16" fill="var(--brand)"/>
+        <path d="M62 90 l5 5 l10 -11" stroke="#ffffff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="170" y="24" width="122" height="132" rx="10" fill="var(--panel)" stroke="var(--line)" stroke-width="1.4"/>
+        <text x="231" y="18" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--ink-mute)" letter-spacing="0.3">APPLICATION CODE</text>
+        <rect x="190" y="62" width="30" height="16" rx="3" fill="#ffffff" stroke="var(--line)"/>
+        <rect x="190" y="86" width="46" height="16" rx="3" fill="#ffffff" stroke="var(--line)"/>
+        <rect x="190" y="110" width="36" height="16" rx="3" fill="#ffffff" stroke="var(--line)"/>
+        <rect x="140" y="78" width="20" height="24" rx="4" fill="#ffffff" stroke="var(--brand)" stroke-width="1.4"/>
+        <path d="M147 88 v-3 a3 3 0 0 1 6 0 v3" fill="none" stroke="var(--brand)" stroke-width="1.4"/>
+        <rect x="145" y="88" width="10" height="8" rx="1.5" fill="var(--brand)"/>
+        <path d="M130 68 L142 82" stroke="var(--brand)" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M130 122 L142 102" stroke="var(--line)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M130 122 L142 102" stroke="var(--warn)" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M126 116 l6 8 l-9 2 Z" fill="var(--warn)"/>
+      </svg>
+      <div class="diagram-cap">checked requests pass &middot; direct access is blocked</div>
+    </div>
+  </div>
+
+  <div class="define">
+    <span class="define-label">A quick definition</span>
+    <p>
+      <strong>Cyber resilience</strong> is a property of the device
+      itself: whether it keeps working safely, keeps its data
+      protected, and recovers cleanly when something goes wrong —
+      including when someone is actively trying to break it. It's
+      engineered in at design time, not bolted on afterward.
+    </p>
+    <p class="muted">
+      That's different from <strong>cyber security services</strong>
+      — audits, penetration testing, monitoring, incident response —
+      which typically examine a product after it already exists. Our
+      place in that picture is earlier: as your firmware engineering
+      partner, we design and build the product itself, so resilience
+      is part of its architecture from day one.
+    </p>
+  </div>
+
+  <div class="why-band">
+    <p>
+      EN 303 645 alignment is becoming a <strong>market-access
+      requirement</strong>, not a nice-to-have. In Japan,
+      <strong>JC-STAR</strong> — the METI/IPA IoT security labeling
+      scheme launched in 2025 — builds its graded, 1-to-4-star
+      conformity requirements directly on EN 303 645. In the EU,
+      meeting it gives manufacturers a presumption of conformity
+      with the <strong>Cyber Resilience Act's</strong> essential
+      requirements, the strongest alignment of any existing
+      standard. Getting there takes more than choosing a chip with
+      the right security features; it takes an engineering team
+      that turns those features into protections built into your
+      product's actual firmware, from day one. That's the
+      discipline behind everything on this page.
+    </p>
+  </div>
+
+  <section>
+    <div class="section-label">System architecture</div>
+    <h2>How the pieces fit together</h2>
+    <p class="lede">
+      A map of what's actually running in the device: your
+      application code, the protected core it can't get around, and
+      the silicon underneath.
+    </p>
+    <figure class="arch-wrap" style="margin-top:22px;">
+      <svg viewBox="0 0 860 460" xmlns="http://www.w3.org/2000/svg"
+           role="img" aria-label="System architecture: non-secure
+           application code reaches the secure core only through
+           checked NSC entry points; a signature-verifying bootloader
+           gates what runs before either world starts; both rest on
+           RA8P1 hardware.">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+          </marker>
+        </defs>
+
+        <!-- Boot chain lane -->
+        <rect class="band" x="16" y="16" width="190" height="326" rx="10"/>
+        <text class="band-label" x="30" y="34">Boot chain</text>
+
+        <rect class="blk-built" x="32" y="46" width="158" height="56" rx="8"/>
+        <text class="blk-title" x="111" y="70">Bootloader</text>
+        <text class="blk-sub" x="111" y="86">sole boot authority</text>
+
+        <line class="flow" x1="111" y1="102" x2="111" y2="118" marker-end="url(#arrow)"/>
+
+        <rect class="blk-built" x="32" y="120" width="158" height="58" rx="8"/>
+        <text class="blk-title" x="111" y="144">Signature check</text>
+        <text class="blk-sub" x="111" y="160">ECDSA-P256 &middot; SHA-256</text>
+
+        <line class="flow" x1="111" y1="178" x2="111" y2="194" marker-end="url(#arrow)"/>
+
+        <rect class="blk-planned" x="32" y="196" width="158" height="48" rx="8"/>
+        <text class="blk-title" x="111" y="216">Rollback</text>
+        <text class="blk-sub" x="111" y="232">swap &amp; revert &middot; planned</text>
+
+        <path class="flow" d="M111,244 L111,340 L264,340 L264,384"
+              marker-end="url(#arrow)"/>
+        <text class="flow-label" x="118" y="336">verifies via</text>
+
+        <line class="flow" x1="206" y1="247" x2="228" y2="247" marker-end="url(#arrow)"/>
+        <text class="flow-label" x="203" y="261" text-anchor="end">hands off</text>
+
+        <!-- Application band -->
+        <rect class="band" x="230" y="16" width="614" height="130" rx="10"/>
+        <text class="band-label" x="244" y="34">Application &middot; non-secure</text>
+
+        <rect class="blk-built" x="244" y="60" width="136" height="68" rx="8"/>
+        <text class="blk-title" x="312" y="88">Peripherals</text>
+        <text class="blk-sub" x="312" y="104">5 patterns, built</text>
+
+        <rect class="blk-dim" x="392" y="60" width="136" height="68" rx="8"/>
+        <text class="blk-title" x="460" y="88">Network client</text>
+        <text class="blk-sub" x="460" y="104">not yet encrypted</text>
+
+        <rect class="blk-progress" x="540" y="60" width="136" height="68" rx="8"/>
+        <text class="blk-title" x="608" y="88">Update receiver</text>
+        <text class="blk-sub" x="608" y="104">stages signed images</text>
+
+        <rect class="blk-planned" x="688" y="60" width="136" height="68" rx="8"/>
+        <text class="blk-title" x="756" y="88">Secure comms</text>
+        <text class="blk-sub" x="756" y="104">TLS / DTLS &middot; planned</text>
+
+        <!-- NSC gate -->
+        <rect class="gate-fill" x="230" y="154" width="614" height="28" rx="6"/>
+        <text class="gate-label" x="537" y="172">NSC gate — checked entry points only</text>
+        <line class="flow" x1="534" y1="146" x2="534" y2="192" marker-end="url(#arrow)"/>
+
+        <!-- Secure core band -->
+        <rect class="band" x="230" y="192" width="614" height="110" rx="10"/>
+        <text class="band-label" x="244" y="210">Secure core &middot; TrustZone</text>
+
+        <rect class="blk-built" x="244" y="222" width="138" height="70" rx="8"/>
+        <text class="blk-title" x="313" y="252">Secure storage</text>
+        <text class="blk-sub" x="313" y="268">on-chip MRAM / SRAM</text>
+
+        <rect class="blk-dim" x="392" y="222" width="138" height="70" rx="8"/>
+        <text class="blk-title" x="461" y="252">Flash encryption</text>
+        <text class="blk-sub" x="461" y="268">external flash</text>
+
+        <rect class="blk-built" x="540" y="222" width="138" height="70" rx="8"/>
+        <text class="blk-title" x="609" y="252">Fault handler</text>
+        <text class="blk-sub" x="609" y="268">run-time containment</text>
+
+        <rect class="blk-dim" x="688" y="222" width="138" height="70" rx="8"/>
+        <text class="blk-title" x="757" y="252">Boot counter</text>
+        <text class="blk-sub" x="757" y="268">integrity check</text>
+
+        <line class="flow" x1="537" y1="302" x2="537" y2="354" marker-end="url(#arrow)"/>
+        <text class="flow-label" x="547" y="330">hardware-enforced</text>
+
+        <!-- Silicon band -->
+        <rect class="band" x="16" y="354" width="828" height="92" rx="10"/>
+        <text class="band-label" x="30" y="372">RA8P1 silicon</text>
+
+        <rect class="blk-hw" x="30" y="386" width="156" height="50" rx="8"/>
+        <text class="blk-title-hw" x="108" y="406">Cortex-M85</text>
+        <text class="blk-sub" x="108" y="422">dual-core &middot; TrustZone</text>
+
+        <rect class="blk-hw" x="196" y="386" width="136" height="50" rx="8"/>
+        <text class="blk-title-hw" x="264" y="406">RSIP-E50D</text>
+        <text class="blk-sub" x="264" y="422">crypto engine</text>
+
+        <rect class="blk-hw" x="342" y="386" width="108" height="50" rx="8"/>
+        <text class="blk-title-hw" x="396" y="406">MRAM</text>
+        <text class="blk-sub" x="396" y="422">on-chip storage</text>
+
+        <rect class="blk-hw" x="460" y="386" width="126" height="50" rx="8"/>
+        <text class="blk-title-hw" x="523" y="406">OSPI Flash</text>
+        <text class="blk-sub" x="523" y="422">external &middot; DOTF</text>
+
+        <rect class="blk-hw" x="596" y="386" width="224" height="50" rx="8"/>
+        <text class="blk-title-hw" x="708" y="406">Peripherals</text>
+        <text class="blk-sub" x="708" y="422">UART &middot; RTC &middot; ICU &middot; GPIO</text>
+      </svg>
+      <figcaption>
+        Non-secure application code reaches the secure core only
+        through checked NSC entry points (the gate). A protected
+        bootloader verifies every image's signature before either
+        world starts running. Everything rests on the RA8P1's own
+        silicon — including the hardware crypto engine the bootloader
+        and the storage boundary both call into.
+      </figcaption>
+    </figure>
+    <div class="meter-legend" style="margin-top:14px;">
+      <span><span class="dot strong-dot"></span>Built</span>
+      <span><span class="dot partial-dot"></span>In progress</span>
+      <span><span class="dot dim-dot"></span>Extending coverage</span>
+      <span><span class="dot planned-dot"></span>Planned</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Built</div>
+    <h2>Three protections, built and hardware-enforced</h2>
+    <p class="lede">
+      Built into the device itself — not a setting you switch on,
+      not a promise on a slide.
+    </p>
+    <div class="cards" style="margin-top:24px;">
+      <div class="card">
+        <span class="badge">built</span>
+        <span class="provision">EN 303 645 &middot; Secure storage</span>
+        <h3>Data stays protected, even if the application is compromised</h3>
+        <p>
+          Keys, credentials, and other sensitive data live where
+          ordinary application firmware simply cannot reach — buggy
+          or compromised code cannot expose them. Any attempt to
+          bypass the boundary is caught by the processor's own
+          security hardware, which safely halts and resets the
+          device rather than continuing in an unsafe state.
+        </p>
+        <div class="why-line">Reduces breach impact to the boundary, not the whole device</div>
+        <div class="tech-note">Hardware-checked memory access, automatic reset on violation, AES-encrypted external flash.</div>
+        <div class="chips-label">Delivered as</div>
+        <div class="chips">
+          <span class="chip">On-chip secure storage</span>
+          <span class="chip dim">Flash encryption</span>
+        </div>
+      </div>
+      <div class="card">
+        <span class="badge">built</span>
+        <span class="provision">EN 303 645 &middot; Attack surface</span>
+        <h3>A minimized attack surface, built in from the start</h3>
+        <p>
+          Sensitive peripherals are owned exclusively by a protected
+          core; application code gets only a narrow, deliberate set
+          of permitted operations — never direct hardware access. We
+          built this pattern against multiple independent
+          peripheral types, not just once.
+        </p>
+        <div class="why-line">A repeatable design pattern, not a one-off demo</div>
+        <div class="tech-note">Verified down to zero non-secure interrupts on the isolated peripherals.</div>
+        <div class="chips-label">Delivered as</div>
+        <div class="chips">
+          <span class="chip">Serial console</span>
+          <span class="chip">Interrupt controller</span>
+          <span class="chip">Real-time clock</span>
+          <span class="chip">GPIO</span>
+          <span class="chip">RTOS scheduler</span>
+          <span class="chip dim">Network interface</span>
+        </div>
+      </div>
+      <div class="card">
+        <span class="badge">built</span>
+        <span class="provision">EN 303 645 &middot; Software integrity</span>
+        <h3>Firmware that verifies itself before it ever runs</h3>
+        <p>
+          A protected bootloader — never the application — is the
+          sole authority over whether a firmware image is allowed to
+          run: it cryptographically verifies the image's signature
+          before booting it. If a violation is triggered at run time
+          anyway, the device detects and safely contains it too.
+        </p>
+        <div class="why-line">Verified at boot, contained at run time — both halves covered</div>
+        <div class="tech-note">ECDSA-P256 signature over SHA-256, checked by the on-chip crypto engine before every boot.</div>
+        <div class="chips-label">Delivered as</div>
+        <div class="chips">
+          <span class="chip">Secure bootloader</span>
+          <span class="chip">Run-time fault handler</span>
+          <span class="chip dim">Boot-integrity counter</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">In progress</div>
+    <h2>Built where it counts most, extending outward</h2>
+    <p class="lede">
+      Already working where it matters most, with more coverage on
+      the way.
+    </p>
+    <div class="cards" style="margin-top:24px;">
+      <div class="card dev">
+        <span class="badge">in progress</span>
+        <span class="provision">EN 303 645 &middot; Secure updates</span>
+        <h3>Update delivery that survives a bad build</h3>
+        <p>
+          The hard part is done: a protected bootloader that will
+          not install or run an update it cannot cryptographically
+          verify, delivered across a single-core and a dual-core
+          variant. Next: automatic rollback for a signed update that
+          turns out broken, production key management, and
+          encrypting update content in transit.
+        </p>
+        <div class="why-line">Signature verification built &rarr; rollback, keys, encryption next</div>
+        <div class="tech-note">Every update image is signed and verified before install — nothing unsigned or altered ever runs.</div>
+        <div class="chips-label">Delivered as</div>
+        <div class="chips">
+          <span class="chip">Secure bootloader</span>
+          <span class="chip">Dual-core update path</span>
+        </div>
+      </div>
+      <div class="card dev">
+        <span class="badge">in progress</span>
+        <span class="provision">EN 303 645 &middot; Input validation</span>
+        <h3>Boundary validation, extending to the network</h3>
+        <p>
+          Every request that crosses into protected memory is
+          checked for address, length, and range before it's
+          allowed through. Next: the same discipline applied to
+          network-facing input, a broader and different surface to
+          cover.
+        </p>
+        <div class="why-line">Storage boundary built &rarr; network path next</div>
+        <div class="tech-note">Every boundary-crossing request is checked for address, length, and range before it's allowed through.</div>
+        <div class="chips-label">Delivered as</div>
+        <div class="chips">
+          <span class="chip">Secure storage boundary</span>
+          <span class="chip dim">Network interface</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Roadmap</div>
+    <h2>Every provision, at a glance</h2>
+    <div class="meter-wrap" style="margin-top:20px;">
+      <div class="meter">
+        <div class="seg strong"></div><div class="seg strong"></div><div class="seg strong"></div>
+        <div class="seg partial"></div><div class="seg partial"></div>
+        <div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+        <div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+        <div class="seg"></div><div class="seg"></div><div class="seg"></div>
+      </div>
+      <div class="meter-legend">
+        <span><span class="dot strong-dot"></span>3 built</span>
+        <span><span class="dot partial-dot"></span>2 in progress</span>
+        <span><span class="dot open-dot"></span>11 planned, next phase</span>
+      </div>
+      <p class="lede" style="margin-top:4px;">
+        The remaining provisions are scoped, not open questions.
+        Each is listed individually below.
+      </p>
+    </div>
+
+    <div style="margin-top:32px;">
+      <div class="map-group">
+        <h4>Product &amp; device security <span class="std">EN 303 645 &sect;5</span></h4>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">No universal default passwords — <span class="why">authentication hardening for your product's identity model</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Vulnerability disclosure — <span class="why">a responsible-disclosure process for your product</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill partial">In progress</span>
+          <span class="desc">Secure software updates — <span class="why">signature verification built, rollback safety next</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill strong">Built</span>
+          <span class="desc">Secure storage of sensitive data — <span class="why">hardware-isolated by design</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Secure communications — <span class="why">encrypted, authenticated network channels</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill strong">Built</span>
+          <span class="desc">Minimized attack surface — <span class="why">built across six independent peripherals</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill strong">Built</span>
+          <span class="desc">Software integrity — <span class="why">verified at boot and contained at run time</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Personal data confidentiality in transit — <span class="why">applies once your product handles personal data</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Resilience to outages — <span class="why">graceful recovery after power or network loss</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Telemetry monitoring — <span class="why">anomaly detection on operational data</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Easy deletion of user data — <span class="why">user-initiated data erasure</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Easy installation &amp; maintenance — <span class="why">a secure-by-default setup experience</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill partial">In progress</span>
+          <span class="desc">Input validation — <span class="why">built at the storage boundary, network path next</span></span>
+        </div>
+      </div>
+
+      <div class="map-group">
+        <h4>Data protection <span class="std">EN 303 645 &sect;6</span></h4>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Transparency of data processing — <span class="why">clear disclosure of what's collected and why</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Valid consent — <span class="why">consent capture and withdrawal for personal data</span></span>
+        </div>
+        <div class="map-row">
+          <span class="pill open">Planned</span>
+          <span class="desc">Data minimization — <span class="why">collecting only what a product actually needs</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta">
+    <span class="section-label">Start a conversation</span>
+    <h2>Let's talk about your product</h2>
+    <p>
+      Every connected product has a different data sensitivity
+      profile, network exposure, and delivery deadline. If you're
+      looking for a partner who builds cyber resilience into your
+      product's firmware from day one — on RA8P1 or another
+      platform — we'd welcome the conversation.
+    </p>
+    <a class="cta-btn" href="mailto:services@gnomons.com?subject=Cyber%20Resilience%20Engineering%20Inquiry">
+      <span>Email Us About Your Product</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+    </a>
+  </div>
+
+</div>
