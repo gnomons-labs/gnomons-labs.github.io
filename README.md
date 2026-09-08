@@ -4,7 +4,7 @@ Marketing landing page for Gnomons, hosted via GitHub Pages.
 
 ## Live site
 
-https://www.gnomons.com
+https://gnomons.com
 
 ## Files
 
