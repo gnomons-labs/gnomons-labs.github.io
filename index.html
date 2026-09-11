@@ -516,8 +516,11 @@
                     <span>Built with Cyber Resilience in Mind</span>
                 </div>
             </div>
-            <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-400 text-center sm:text-left">
-                Renesas and the Renesas logo are trademarks of Renesas Electronics Corporation. All other product and company names are trademarks of their respective owners.
+            <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+                <span>Renesas and the Renesas logo are trademarks of Renesas Electronics Corporation. All other product and company names are trademarks of their respective owners.</span>
+                <button onclick="translateToJapanese()" class="whitespace-nowrap text-slate-500 hover:text-brand-700 underline underline-offset-2 transition-colors" aria-label="Translate this page to Japanese">
+                    日本語で読む
+                </button>
             </div>
         </div>
     </footer>
@@ -532,6 +535,10 @@
             document.getElementById('mobile-menu').classList.add('hidden');
             document.getElementById('menu-icon-open').classList.remove('hidden');
             document.getElementById('menu-icon-close').classList.add('hidden');
+        }
+        function translateToJapanese() {
+            const url = "https://translate.google.com/translate?sl=auto&tl=ja&u=" + encodeURIComponent(window.location.href);
+            window.open(url, "_blank", "noopener");
         }
         function copyEmail() {
             const email = "services@gnomons.com";

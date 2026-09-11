@@ -255,10 +255,18 @@ h2{
   transition:background .15s ease;
 }
 .cta-btn:hover{ background:var(--brand-dark); }
+
+.translate-btn{
+  font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-mute);
+  background:none; border:1px solid var(--line); border-radius:6px;
+  padding:5px 10px; cursor:pointer; transition:color .15s ease, border-color .15s ease;
+}
+.translate-btn:hover{ color:var(--brand-dark); border-color:var(--brand-line); }
 </style>
 
-<div class="wrap">
+<div class="wrap" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
   <a class="back" href="https://www.gnomons.com/">&larr; gnomons.com</a>
+  <button class="translate-btn" onclick="translateToJapanese()" style="margin-top:22px;">日本語で読む</button>
 </div>
 
 <div class="wrap">
@@ -713,3 +721,10 @@ h2{
   </div>
 
 </div>
+
+<script>
+function translateToJapanese() {
+  const url = "https://translate.google.com/translate?sl=auto&tl=ja&u=" + encodeURIComponent(window.location.href);
+  window.open(url, "_blank", "noopener");
+}
+</script>
