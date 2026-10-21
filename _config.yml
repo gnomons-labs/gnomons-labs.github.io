@@ -1,0 +1,3 @@
+# Files kept in the repo but not published to gnomons.com
+exclude:
+  - README.md
