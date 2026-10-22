@@ -9,6 +9,9 @@ https://gnomons.com
 ## Files
 
 - `index.html` — the landing page
+- `cyber-resilience-by-design.html` — subpage: Cyber resilience by design
+- `conversational-hand-gestures.html` — subpage: Conversational hand gestures demo
+- `pose-estimation.html` — subpage: PoseNet pose estimation on the EK-RA8P1, NPU vs CPU-only
 - `logo.png` — brand icon (used in the header)
 - `wordmark.png` — "Gnomons" wordmark image (used in the header)
 - `favicon.ico` — browser tab icon

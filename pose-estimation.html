@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-Time Pose Estimation — Gnomons</title>
+<meta name="description" content="Real-time, private pose estimation running on a Renesas RA8P1 microcontroller — live body tracking, with and without the NPU.">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --paper:#ffffff;
+  --panel:#f8fafc;      /* slate-50 */
+  --ink:#0f172a;        /* slate-900 */
+  --ink-soft:#475569;   /* slate-600 */
+  --ink-mute:#64748b;   /* slate-500 */
+  --ink-faint:#94a3b8;  /* slate-400 */
+  --line:#e2e8f0;       /* slate-200 */
+  --line-soft:#f1f5f9;  /* slate-100 */
+  --brand:#16a34a;      /* green-600 */
+  --brand-dark:#15803d; /* green-700 */
+  --brand-darker:#166534;/* green-800 */
+  --brand-soft:#dcfce7; /* green-100 */
+  --brand-tint:#f0fdf4; /* green-50 */
+  --brand-line:#bbf7d0; /* green-200 */
+  --accent:#0ea5e9;     /* sky-500, CPU-only lane */
+  --accent-dark:#0369a1;/* sky-700 */
+  --accent-soft:#e0f2fe;/* sky-100 */
+  --accent-tint:#f0f9ff;/* sky-50 */
+  --accent-line:#bae6fd;/* sky-200 */
+  --shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 20px -10px rgba(15,23,42,0.10);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper); color:var(--ink);
+  font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{ background:var(--brand-soft); color:var(--brand-darker); }
+a{ color:inherit; }
+
+.wrap{ max-width:1040px; margin:0 auto; padding:0 24px; }
+
+/* Back link */
+.back{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-mute);
+  text-decoration:none; padding:22px 0 0;
+}
+.back:hover{ color:var(--brand-dark); }
+
+/* Hero */
+.hero{
+  display:grid; grid-template-columns:1.15fr 0.85fr; gap:44px;
+  align-items:center; padding:40px 0 56px;
+  border-bottom:1px solid var(--line-soft);
+}
+@media (max-width:760px){ .hero{ grid-template-columns:1fr; } }
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--brand-dark);
+  background:var(--brand-tint); border:1px solid var(--brand-line);
+  border-radius:99px; padding:5px 12px 5px 10px; margin-bottom:18px;
+}
+.eyebrow .dot{ width:7px; height:7px; border-radius:99px; background:var(--brand); flex-shrink:0; }
+h1{
+  font-family:'Inter', sans-serif; font-weight:800; letter-spacing:-0.02em;
+  font-size:clamp(32px,4.6vw,48px); line-height:1.1; margin:0 0 18px;
+  color:var(--ink); text-wrap:balance;
+}
+.hero p{ font-size:17px; color:var(--ink-soft); margin:0; line-height:1.65; }
+
+.diagram-box{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  box-shadow:var(--shadow); padding:20px 18px 16px;
+}
+.diagram-box svg{ width:100%; height:auto; display:block; }
+.diagram-cap{
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-mute);
+  text-align:center; margin-top:10px; letter-spacing:0.01em;
+}
+
+/* section rhythm */
+section{ padding:52px 0; border-bottom:1px solid var(--line-soft); }
+section:last-of-type{ border-bottom:none; }
+.section-label{
+  font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-dark);
+  margin-bottom:8px;
+}
+h2{
+  font-family:'Inter', sans-serif; font-weight:700; letter-spacing:-0.01em;
+  font-size:27px; margin:0 0 16px; text-wrap:balance; color:var(--ink);
+}
+.lede{ font-size:15.5px; color:var(--ink-soft); margin:0 0 8px; }
+.lede strong{ color:var(--ink); }
+code{ font-family:'JetBrains Mono', monospace; font-size:0.92em; background:var(--panel); border:1px solid var(--line); border-radius:4px; padding:1px 5px; color:var(--ink); }
+.tech-note{
+  font-family:'JetBrains Mono', monospace; font-size:11.5px;
+  color:var(--ink-mute); line-height:1.5;
+}
+
+/* Demo photo */
+.photo{
+  margin:22px 0 0; background:var(--paper); border:1px solid var(--line);
+  border-radius:10px; box-shadow:var(--shadow); overflow:hidden;
+}
+.photo video{ display:block; width:100%; height:auto; background:var(--panel); }
+.photo figcaption{ font-size:12.5px; color:var(--ink-mute); padding:12px 18px 14px; border-top:1px solid var(--line-soft); }
+
+/* Cards */
+.cards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.cards.three{ grid-template-columns:repeat(3,1fr); }
+@media (max-width:680px){ .cards, .cards.three{ grid-template-columns:1fr; } }
+.card{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  padding:24px 24px 22px; box-shadow:var(--shadow);
+  display:flex; flex-direction:column; gap:11px; position:relative;
+  transition:border-color .15s ease;
+}
+.card:hover{ border-color:var(--brand-line); }
+.card.cpu:hover{ border-color:var(--accent-line); }
+.card h3{
+  font-family:'Inter', sans-serif; font-weight:700; font-size:18px; margin:0;
+  line-height:1.32; color:var(--ink); padding-right:96px;
+}
+.card p{ font-size:14px; color:var(--ink-soft); margin:0; }
+.card .why-line{
+  font-size:13.5px; font-weight:600; color:var(--brand-darker);
+  padding-top:11px; border-top:1px solid var(--line-soft); margin-top:auto;
+}
+.card.cpu .why-line{ color:var(--accent-dark); }
+.badge{
+  position:absolute; top:22px; right:22px;
+  font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:600;
+  letter-spacing:0.03em; padding:3px 9px; border-radius:99px;
+  background:var(--brand-soft); color:var(--brand-darker);
+}
+.badge.cpu{ background:var(--accent-soft); color:var(--accent-dark); }
+.badge.both{ background:var(--panel); color:var(--ink-mute); border:1px solid var(--line); padding:2px 8px; }
+
+/* Architecture diagram */
+.arch-wrap{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  padding:18px 18px 6px; box-shadow:var(--shadow); overflow-x:auto; margin:22px 0 0;
+}
+.arch-wrap svg{ width:100%; height:auto; display:block; min-width:720px; }
+.arch-wrap figcaption{
+  font-size:12.5px; color:var(--ink-mute); padding:10px 4px 14px;
+}
+.diagram-legend{ display:flex; flex-wrap:wrap; gap:8px 20px; padding:0 4px 16px; }
+.legend-item{
+  display:flex; align-items:center; gap:7px;
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-mute);
+}
+.legend-swatch{ width:12px; height:12px; border-radius:3px; flex-shrink:0; border:1.3px solid; }
+.legend-swatch.npu{ background:var(--brand-soft); border-color:var(--brand); }
+.legend-swatch.cpu{ background:var(--accent-soft); border-color:var(--accent); }
+.legend-swatch.shared{ background:var(--panel); border-color:var(--ink-faint); }
+.legend-swatch.hw{ background:var(--panel); border-color:var(--line); }
+.band{ fill:none; stroke:var(--line); stroke-width:1.2; }
+.band-label{
+  font-family:'JetBrains Mono', monospace; font-size:9.5px; font-weight:600;
+  letter-spacing:0.06em; fill:var(--ink-mute); text-transform:uppercase;
+}
+.blk-npu{ fill:var(--brand-soft); stroke:var(--brand); stroke-width:1.3; }
+.blk-cpu{ fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.3; }
+.blk-shared{ fill:var(--panel); stroke:var(--ink-faint); stroke-width:1.2; }
+.blk-hw{ fill:var(--panel); stroke:var(--line); stroke-width:1.2; }
+.blk-title{
+  font-family:'Inter', sans-serif; font-weight:700;
+  font-size:12px; fill:var(--ink); text-anchor:middle;
+}
+.blk-title-hw{
+  font-family:'JetBrains Mono', monospace; font-weight:600; font-size:10px;
+  fill:var(--ink); text-anchor:middle; letter-spacing:0.01em;
+}
+.blk-sub{ font-family:'Inter', sans-serif; font-size:8.7px; fill:var(--ink-mute); text-anchor:middle; }
+.flow{ fill:none; stroke:#94a3b8; stroke-width:1.3; }
+.flow-label{ font-family:'JetBrains Mono', monospace; font-size:8.5px; fill:var(--ink-mute); text-anchor:middle; }
+
+/* Stat strip */
+.stat-strip{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px; }
+@media (max-width:680px){ .stat-strip{ grid-template-columns:1fr; } }
+.stat-tile{
+  background:var(--brand-tint); border:1px solid var(--brand-line); border-radius:10px;
+  padding:18px 20px; text-align:center;
+}
+.stat-tile.cpu{ background:var(--accent-tint); border-color:var(--accent-line); }
+.stat-num{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:26px;
+  color:var(--brand-darker); letter-spacing:-0.01em; margin-bottom:6px;
+}
+.stat-tile.cpu .stat-num{ color:var(--accent-dark); }
+.stat-label{ font-size:12.5px; color:var(--ink-soft); line-height:1.4; }
+
+/* Comparison table */
+.table-wrap{
+  margin-top:22px; border:1px solid var(--line); border-radius:10px;
+  box-shadow:var(--shadow); overflow-x:auto;
+}
+.cmp{ width:100%; border-collapse:collapse; min-width:420px; font-size:14px; }
+.cmp th{
+  font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-mute);
+  text-align:left; padding:12px 20px; background:var(--panel);
+  border-bottom:1px solid var(--line);
+}
+.cmp th.npu{ color:var(--brand-dark); }
+.cmp th.cpu{ color:var(--accent-dark); }
+.cmp td{ padding:13px 20px; border-bottom:1px solid var(--line-soft); color:var(--ink-soft); vertical-align:top; }
+.cmp tr:last-child td{ border-bottom:none; }
+.cmp td.num{ font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--ink); }
+.cmp td .sub{ display:block; font-family:'Inter', sans-serif; font-size:12px; color:var(--ink-mute); margin-top:2px; }
+
+/* Verdict band */
+.why-band{
+  margin-top:22px; background:var(--brand-tint); border:1px solid var(--brand-line);
+  border-radius:10px; padding:22px 26px;
+}
+.why-band p{ margin:0; font-size:15.5px; color:var(--ink-soft); }
+.why-band p + p{ margin-top:8px; }
+.why-band strong{ color:var(--brand-darker); }
+
+/* Status rows */
+.map-list{ display:flex; flex-direction:column; border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:var(--shadow); margin-top:22px; }
+.map-row{
+  display:grid; grid-template-columns:88px 1fr; gap:16px; align-items:baseline;
+  padding:15px 20px; border-bottom:1px solid var(--line-soft); background:var(--paper);
+}
+.map-row:last-child{ border-bottom:none; }
+.map-desc{ font-size:14px; color:var(--ink-soft); }
+.map-desc strong{ color:var(--ink); font-weight:600; }
+.pill{
+  justify-self:start;
+  font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:600;
+  letter-spacing:0.03em; padding:3px 10px; border-radius:99px; white-space:nowrap;
+  background:var(--brand-soft); color:var(--brand-darker);
+}
+.pill.open{ background:var(--panel); color:var(--ink-mute); border:1px solid var(--line); padding:2px 9px; }
+@media (max-width:560px){ .map-row{ grid-template-columns:1fr; gap:6px; } }
+
+/* CTA (matches the site's real contact block) */
+.cta{
+  background:var(--brand-tint); border:1px solid var(--brand-line);
+  border-radius:10px; padding:44px 40px; margin:0 0 56px; text-align:center;
+}
+@media (max-width:680px){ .cta{ padding:36px 22px; } }
+.cta .section-label{ justify-content:center; display:block; }
+.cta h2{ max-width:none; margin:0 auto 14px; font-size:28px; }
+.cta p{ color:var(--ink-soft); font-size:15px; margin:0 auto 26px; }
+.cta-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--brand); color:#fff; font-weight:600; font-size:15px;
+  padding:13px 26px; border-radius:6px; text-decoration:none;
+  box-shadow:0 8px 20px -8px rgba(22,163,74,0.45);
+  transition:background .15s ease;
+}
+.cta-btn:hover{ background:var(--brand-dark); }
+
+.translate-btn{
+  font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-mute);
+  background:none; border:1px solid var(--line); border-radius:6px;
+  padding:5px 10px; cursor:pointer; transition:color .15s ease, border-color .15s ease;
+}
+.translate-btn:hover{ color:var(--brand-dark); border-color:var(--brand-line); }
+</style>
+</head>
+<body>
+
+<div class="wrap" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+  <a class="back" href="https://www.gnomons.com/">&larr; gnomons.com</a>
+  <button class="translate-btn" onclick="translateToJapanese()" style="margin-top:22px;" aria-label="Read this page in Japanese">日本語で読む</button>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow"><span class="dot"></span>Featured R&amp;D &middot; Renesas RA8P1 &middot; Edge AI</div>
+      <h1>Real-time pose estimation on a microcontroller</h1>
+      <p>
+        A camera, a screen and a Renesas RA8P1 evaluation board. The
+        board finds the person in view, marks the key points of their
+        body, and draws the skeleton live as they move. No PC, no cloud,
+        no network: the camera picture stays on the device, which brings
+        body tracking within reach of products where cost and privacy
+        both matter.
+      </p>
+    </div>
+    <div class="diagram-box">
+      <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A camera frame of a person on the left leads to a skeleton of 17 keypoints joined by bones on the right.">
+        <rect x="20" y="38" width="96" height="104" rx="10" fill="var(--brand-tint)" stroke="var(--brand)" stroke-width="1.4"/>
+        <text x="68" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="var(--brand-darker)" letter-spacing="0.5">CAMERA</text>
+        <!-- person silhouette -->
+        <g stroke="#cbd5e1" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <circle cx="68" cy="56" r="7" fill="#cbd5e1" stroke="none"/>
+          <path d="M56 70 L80 70 L76 100 L60 100 Z" fill="#cbd5e1" stroke-width="2"/>
+          <path d="M56 71 L48 87 L44 102" stroke-width="5"/>
+          <path d="M80 71 L88 85 L94 100" stroke-width="5"/>
+          <path d="M62 100 L60 117 L58 132" stroke-width="6"/>
+          <path d="M74 100 L76 117 L78 132" stroke-width="6"/>
+        </g>
+        <rect x="184" y="38" width="96" height="104" rx="10" fill="var(--panel)" stroke="var(--line)" stroke-width="1.4"/>
+        <text x="232" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--ink-mute)" letter-spacing="0.3">SKELETON</text>
+        <!-- skeleton: bones -->
+        <g stroke="var(--brand)" stroke-width="1.6" stroke-linecap="round" fill="none">
+          <path d="M226 52 L232 56 L238 52"/>
+          <path d="M220 54 L226 52 M238 52 L244 54"/>
+          <path d="M220 70 L244 70"/>
+          <path d="M220 70 L212 86 L208 101"/>
+          <path d="M244 70 L252 85 L258 100"/>
+          <path d="M220 70 L226 100 M244 70 L238 100"/>
+          <path d="M226 100 L238 100"/>
+          <path d="M226 100 L224 117 L222 132"/>
+          <path d="M238 100 L240 117 L242 132"/>
+        </g>
+        <!-- skeleton: keypoints -->
+        <g fill="var(--brand-darker)">
+          <circle cx="232" cy="56" r="2.4"/>
+          <circle cx="226" cy="52" r="2.4"/><circle cx="238" cy="52" r="2.4"/>
+          <circle cx="220" cy="54" r="2.4"/><circle cx="244" cy="54" r="2.4"/>
+          <circle cx="220" cy="70" r="2.6"/><circle cx="244" cy="70" r="2.6"/>
+          <circle cx="212" cy="86" r="2.6"/><circle cx="252" cy="85" r="2.6"/>
+          <circle cx="208" cy="101" r="2.6"/><circle cx="258" cy="100" r="2.6"/>
+          <circle cx="226" cy="100" r="2.6"/><circle cx="238" cy="100" r="2.6"/>
+          <circle cx="224" cy="117" r="2.6"/><circle cx="240" cy="117" r="2.6"/>
+          <circle cx="222" cy="132" r="2.6"/><circle cx="242" cy="132" r="2.6"/>
+        </g>
+        <path d="M130 90 L170 90" stroke="var(--brand)" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M170 90 L166 87 L166 93 Z" fill="var(--brand)"/>
+      </svg>
+      <div class="diagram-cap">a person in view &middot; a skeleton out &middot; drawn live on screen</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-label">At a glance</div>
+    <h2>Fast enough to follow movement live</h2>
+    <p class="lede">
+      Point the camera at a person and the screen shows the live
+      picture with a skeleton drawn on top. It locks on within about a
+      second and follows the head, arms, body and legs as the person
+      moves &mdash; and the camera picture never leaves the device.
+    </p>
+    <figure class="photo">
+      <video src="pose-estimation-demo.mp4" poster="pose-estimation-demo.jpg"
+             width="960" height="518" autoplay muted loop playsinline preload="metadata"
+             aria-label="The EK-RA8P1 board's LCD showing a live camera picture of a person raising their arms, with a skeleton of red keypoints and blue lines following their body."></video>
+      <figcaption>Live on the EK-RA8P1: the camera picture on the board's LCD, with the skeleton following the person as they raise their arms. Filmed from the board's screen at real speed.</figcaption>
+    </figure>
+    <div class="stat-strip">
+      <div class="stat-tile">
+        <div class="stat-num">12 ms</div>
+        <div class="stat-label">for the AI to read the body in each camera picture</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-num">19 fps</div>
+        <div class="stat-label">skeleton updated on every frame of the live camera</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-num">17 points</div>
+        <div class="stat-label">tracked on the body, from head to ankles, on a single microcontroller</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Why it matters</div>
+    <h2>A body skeleton is a small, useful signal</h2>
+    <p class="lede">
+      With application logic on top, a few points per person can be
+      enough to tell standing from sitting, count an exercise, check a
+      posture or spot a fall &mdash; without sending any images
+      anywhere. That could bring body-aware features to products built
+      on a microcontroller rather than a PC-class processor.
+    </p>
+    <div class="cards" style="margin-top:22px;">
+      <div class="card">
+        <h3>Fitness and rehabilitation</h3>
+        <p>
+          Count repetitions, check exercise form and track how far a
+          joint moves &mdash; in a smart mirror, a home device or a
+          clinic station.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Care and workplace safety</h3>
+        <p>
+          Notice a fall, someone lying still for too long, or an unsafe
+          lifting posture &mdash; with the camera picture kept on the
+          device rather than sent to a server.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Sports and coaching</h3>
+        <p>
+          Check a golf swing, a running stride or a stretch, and give
+          feedback on the device itself &mdash; no phone app or
+          cloud service needed.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Interactive devices and robots</h3>
+        <p>
+          Let a kiosk, a toy, a display or a robot respond to how a
+          person stands and moves &mdash; a raised arm, a wave, someone
+          stepping closer.
+        </p>
+      </div>
+    </div>
+    <p class="tech-note" style="margin-top:16px;">
+      These are possible directions for this work, not shipped
+      products. Each would need its own application logic and testing.
+    </p>
+  </section>
+
+  <section>
+    <div class="section-label">Privacy</div>
+    <h2>Privacy built into the design</h2>
+    <p class="lede">
+      Cameras raise privacy concerns, especially in homes, care
+      settings and workplaces. Running the AI on the device itself
+      changes what a product needs to do with the picture.
+    </p>
+    <div class="cards three" style="margin-top:22px;">
+      <div class="card">
+        <h3>Processed where it is captured</h3>
+        <p>
+          The camera picture is analysed on the board itself. The demo
+          needs no network connection, no PC and no cloud service to
+          track a person.
+        </p>
+      </div>
+      <div class="card">
+        <h3>A skeleton, not a picture</h3>
+        <p>
+          The AI's output is a set of body points, not an image. A
+          product could act on those points alone &mdash; a repetition
+          counted, a fall flagged &mdash; without storing or sending
+          any video.
+        </p>
+      </div>
+      <div class="card">
+        <h3>No route out for images</h3>
+        <p>
+          A device that does not need a network for its AI has no path
+          for camera pictures to leave it. That is a simpler privacy
+          story to tell users than promises about how cloud data is
+          handled.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">How it works</div>
+    <h2>From camera to skeleton, on one microcontroller</h2>
+    <p class="lede">
+      Each camera picture is prepared for the AI model, the model finds
+      the person in it, and the skeleton is drawn back over the live
+      picture. We built the AI step two ways: on the chip's built-in AI
+      accelerator (NPU), and on its main processor alone.
+    </p>
+    <figure class="arch-wrap">
+      <svg viewBox="0 0 860 202" xmlns="http://www.w3.org/2000/svg"
+           role="img" aria-label="Camera, then prepare image, then the AI model running either on the NPU or on the CPU alone, then find body points, then draw skeleton. All processing runs on one Renesas RA8P1 microcontroller.">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+          </marker>
+        </defs>
+
+        <rect class="band" x="16" y="16" width="828" height="170" rx="10"/>
+        <text class="band-label" x="30" y="34">Renesas RA8P1 &middot; all processing on one microcontroller</text>
+
+        <rect class="blk-shared" x="32" y="75" width="132" height="60" rx="8"/>
+        <text class="blk-title" x="98" y="101">Camera</text>
+        <text class="blk-sub" x="98" y="117">live video</text>
+
+        <rect class="blk-shared" x="198" y="75" width="132" height="60" rx="8"/>
+        <text class="blk-title" x="264" y="101">Prepare Image</text>
+        <text class="blk-sub" x="264" y="117">sized for the model</text>
+
+        <rect class="band" x="364" y="40" width="132" height="130" rx="8" stroke-dasharray="4 3"/>
+        <text class="band-label" x="430" y="56" text-anchor="middle">AI model</text>
+        <rect class="blk-npu" x="372" y="64" width="116" height="46" rx="6"/>
+        <text class="blk-title" x="430" y="84">NPU</text>
+        <text class="blk-sub" x="430" y="99">fastest</text>
+        <rect class="blk-cpu" x="372" y="116" width="116" height="46" rx="6"/>
+        <text class="blk-title" x="430" y="136">CPU only</text>
+        <text class="blk-sub" x="430" y="151">no NPU needed</text>
+
+        <rect class="blk-shared" x="530" y="75" width="132" height="60" rx="8"/>
+        <text class="blk-title" x="596" y="101">Find Body Points</text>
+        <text class="blk-sub" x="596" y="117">head, arms, body, legs</text>
+
+        <rect class="blk-shared" x="696" y="75" width="132" height="60" rx="8"/>
+        <text class="blk-title" x="762" y="101">Draw Skeleton</text>
+        <text class="blk-sub" x="762" y="117">over the live picture</text>
+
+        <line class="flow" x1="164" y1="105" x2="196" y2="105" marker-end="url(#arrow)"/>
+        <line class="flow" x1="330" y1="105" x2="362" y2="105" marker-end="url(#arrow)"/>
+        <line class="flow" x1="496" y1="105" x2="528" y2="105" marker-end="url(#arrow)"/>
+        <line class="flow" x1="662" y1="105" x2="694" y2="105" marker-end="url(#arrow)"/>
+      </svg>
+      <figcaption>
+        Only the AI step differs between the two versions; everything
+        else is shared, so the two can be compared directly.
+      </figcaption>
+      <div class="diagram-legend">
+        <span class="legend-item"><span class="legend-swatch npu"></span>NPU version</span>
+        <span class="legend-item"><span class="legend-swatch cpu"></span>CPU-only version</span>
+        <span class="legend-item"><span class="legend-swatch shared"></span>Shared by both</span>
+      </div>
+    </figure>
+  </section>
+
+  <section>
+    <div class="section-label">Two versions</div>
+    <h2>One model, two ways to run it</h2>
+    <p class="lede">
+      Both versions run on the real board and show the same skeleton on
+      screen. Together they show clearly what the NPU adds in speed, and
+      give a working starting point for either kind of design.
+    </p>
+    <div class="cards" style="margin-top:22px;">
+      <div class="card">
+        <span class="badge">on hardware</span>
+        <h3>With the NPU: keeps up with the camera</h3>
+        <p>
+          The AI model runs entirely on the NPU, so the skeleton keeps
+          up with every camera picture, with most of each frame's time
+          left over for the rest of the product.
+        </p>
+        <div class="why-line">12 ms per picture &mdash; about 70% of each frame's time left over.</div>
+      </div>
+      <div class="card cpu">
+        <span class="badge cpu">on hardware</span>
+        <h3>CPU only: steady and usable</h3>
+        <p>
+          With the NPU switched off, the main processor runs the same
+          model and updates the skeleton about 6 times a second &mdash;
+          enough to follow a person who is not moving fast.
+        </p>
+        <div class="why-line">Steady, predictable speed &mdash; the same time for every picture we measured.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Results</div>
+    <h2>The NPU makes it 12.9&times; faster</h2>
+    <p class="lede">
+      Because everything except the AI step is shared, the two versions
+      can be compared directly. Times were measured on the board; the
+      time left over is worked out from those measured times.
+    </p>
+    <div class="table-wrap">
+      <table class="cmp">
+        <thead>
+          <tr><th></th><th class="npu">With the NPU</th><th class="cpu">CPU only</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Time for the AI step</td><td>12 ms</td><td>155 ms</td></tr>
+          <tr><td>Skeleton updates per second</td><td>19 &mdash; every camera frame</td><td>about 6</td></tr>
+          <tr><td>Time left in each camera frame</td><td>about 70%</td><td>&mdash;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="why-band">
+      <p>
+        <strong>The NPU earns its place.</strong> It makes the AI step
+        12.9&times; faster and keeps up with every camera frame, with
+        about 70% of each frame's time left over for the rest of the
+        product.
+      </p>
+      <p>
+        And for designs that must run without an NPU, the CPU-only
+        version gives a measured reference speed &mdash; a useful
+        starting point when choosing a chip.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Engineering</div>
+    <h2>Problems found and solved on real hardware</h2>
+    <p class="lede">
+      Getting an AI model to run is only the start. Making its answers
+      correct on real hardware took deeper work &mdash; the kind of
+      issues that give wrong results rather than an obvious crash.
+    </p>
+    <div class="cards" style="margin-top:22px;">
+      <div class="card">
+        <h3>Up-to-date results from the NPU</h3>
+        <p>
+          The NPU and the main processor were not always seeing the
+          same data, so the processor could read out-of-date results.
+          We found the cause and fixed it, so the skeleton is drawn from
+          the NPU's latest result.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Easy to maintain and extend</h3>
+        <p>
+          The two versions are kept as separate projects, so a change to
+          one does not affect the other, and every change we made to vendor
+          code is clearly marked with what it replaced and why.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Fast image preparation</h3>
+        <p>
+          We streamlined how each camera picture is prepared for the AI
+          model, so the whole step takes just 2 ms and leaves more time
+          for the rest of the application.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Clear camera-placement guidance</h3>
+        <p>
+          The model tracks best when it can see the whole body, from
+          head to feet. We checked on the board how framing affects
+          tracking, which gives a clear starting point for placing the
+          camera in a product.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Next steps</div>
+    <h2>Where this goes next</h2>
+    <p class="lede">
+      This is an R&amp;D build, not a product, and it already runs on
+      hardware. The spare time it leaves opens several directions.
+    </p>
+    <div class="map-list">
+      <div class="map-row"><span class="pill">Built</span><div class="map-desc"><strong>NPU version</strong> &mdash; running on the board at 19 fps, the camera's full rate.</div></div>
+      <div class="map-row"><span class="pill">Built</span><div class="map-desc"><strong>CPU-only version</strong> &mdash; running on the board, about 6 skeleton updates a second.</div></div>
+      <div class="map-row"><span class="pill open">Next</span><div class="map-desc"><strong>A second AI feature</strong> &mdash; the NPU version has time left in each frame that could be used for another model, such as hand or face tracking.</div></div>
+      <div class="map-row"><span class="pill open">Next</span><div class="map-desc"><strong>Smoother video</strong> &mdash; today the camera, not the AI, sets the speed; a faster camera setting should fit in the time available.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Closing Thought</div>
+    <h2>Body tracking, sized for a microcontroller</h2>
+    <p class="lede">
+      Pose estimation often runs on a PC-class processor or in the
+      cloud. On the RA8P1 it runs live, beside a camera and a display,
+      with images kept on the device. Measuring the same model with and
+      without the NPU makes this more useful than a demo: measured
+      numbers to inform the choice of chip, and a tested starting point
+      for product development.
+    </p>
+    <p class="lede">
+      That is the discipline we bring to every engagement:
+      hardware-aware intelligence. We bring up the model, fix what only
+      shows up on real hardware, and measure the options on the board
+      &mdash; so the hardware decision is made on evidence, not on a
+      datasheet.
+    </p>
+  </section>
+
+  <div class="cta">
+    <span class="section-label">Start A Conversation</span>
+    <h2>Want private, on-device body tracking in your product?</h2>
+    <p>
+      This is one build from our Renesas RA8P1 R&amp;D work. Share your
+      idea and your hardware targets, and we'll show you what it takes
+      to run pose estimation on your device &mdash; with or without an
+      NPU.
+    </p>
+    <a class="cta-btn" href="mailto:services@gnomons.com?subject=Pose%20Estimation%20Inquiry">
+      services@gnomons.com
+      <svg width="16" height="16" fill="none" stroke="#fff" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+function translateToJapanese() {
+  const url = "https://translate.google.com/translate?sl=auto&tl=ja&u=" + encodeURIComponent(window.location.href);
+  window.open(url, "_blank", "noopener");
+}
+</script>
+</body>
+</html>
