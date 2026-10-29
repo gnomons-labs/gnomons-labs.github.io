@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gnomonsは、ルネサスをはじめとするMCU上でオンデバイスAI機能を実装・検証し、デバイスメーカーにお届けします。BOMの最適化、設置環境の変化に強い検知、リリース後の保守まで対応します。">
+    <title>Gnomons — 組み込み機器向けオンデバイスAI</title>
+    <link rel="canonical" href="https://www.gnomons.com/ja/">
+    <link rel="alternate" hreflang="en" href="https://www.gnomons.com/">
+    <link rel="alternate" hreflang="ja" href="https://www.gnomons.com/ja/">
+    <link rel="alternate" hreflang="x-default" href="https://www.gnomons.com/">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'Monaco', 'Noto Sans JP', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Keep Japanese headings from breaking mid-word */
+        h1, h2, h3, h4 { word-break: auto-phrase; }
+    </style>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased selection:bg-brand-100 selection:text-brand-900 flex flex-col min-h-screen">
+
+    <!-- Top Navigation / Brand Header -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between gap-6">
+            <a href="#" class="group flex items-center gap-3 shrink-0">
+                <img src="../logo.png" alt="Gnomons ロゴ" class="w-9 h-9 object-contain">
+                <img src="../wordmark.png" alt="Gnomons" class="h-9 object-contain">
+            </a>
+
+            <nav class="hidden xl:flex items-center gap-5 whitespace-nowrap text-sm font-medium text-slate-600">
+                <a href="#philosophy" class="hover:text-brand-700 transition-colors">理念</a>
+                <a href="#pillars" class="hover:text-brand-700 transition-colors">サービス</a>
+                <a href="#solutions" class="hover:text-brand-700 transition-colors">ソリューション</a>
+                <a href="#projects" class="hover:text-brand-700 transition-colors">研究開発事例</a>
+                <a href="#stack" class="hover:text-brand-700 transition-colors">技術領域</a>
+                <a href="#engagement" class="hover:text-brand-700 transition-colors">進め方</a>
+                <a href="#team" class="hover:text-brand-700 transition-colors">チーム</a>
+            </nav>
+
+            <div class="flex items-center gap-3 shrink-0">
+                <div class="hidden sm:flex items-center gap-1.5 text-xs font-mono font-medium text-slate-500" role="group" aria-label="言語">
+                    <a href="/" hreflang="en" lang="en" class="hover:text-brand-700 transition-colors">EN</a>
+                    <span class="text-slate-300" aria-hidden="true">/</span>
+                    <a href="/ja/" hreflang="ja" aria-current="page" class="text-slate-900 font-semibold">日本語</a>
+                </div>
+                <a href="#contact" class="whitespace-nowrap text-sm font-semibold text-brand-700 border border-brand-600 hover:bg-brand-50 px-4 py-2 rounded-md transition-colors">
+                    お問い合わせ
+                </a>
+                <button onclick="toggleMobileMenu()" class="xl:hidden text-slate-600 hover:text-brand-700 transition-colors p-1" aria-label="メニューを開閉">
+                    <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden xl:hidden border-t border-slate-100 bg-white">
+            <nav class="max-w-5xl mx-auto px-6 py-4 flex flex-col gap-4 text-sm font-medium text-slate-600">
+                <a href="#philosophy" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">理念</a>
+                <a href="#pillars" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">サービス</a>
+                <a href="#solutions" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">ソリューション</a>
+                <a href="#projects" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">研究開発事例</a>
+                <a href="#stack" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">技術領域</a>
+                <a href="#engagement" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">進め方</a>
+                <a href="#team" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">チーム</a>
+                <a href="#offices" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">拠点</a>
+                <div class="pt-4 border-t border-slate-100 flex items-center gap-2 font-mono text-xs text-slate-500" role="group" aria-label="言語">
+                    <a href="/" hreflang="en" lang="en" class="hover:text-brand-700 transition-colors">EN</a>
+                    <span class="text-slate-300" aria-hidden="true">/</span>
+                    <a href="/ja/" hreflang="ja" aria-current="page" class="text-slate-900 font-semibold">日本語</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="max-w-5xl mx-auto px-6 pt-24 pb-20 md:pt-32 md:pb-28">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 text-xs font-mono font-medium text-brand-800 mb-6">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    フィージビリティ調査 受付中
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 tracking-tight leading-[1.2] mb-6">
+                    オンデバイスAI機能を、お客様のハードウェア上で実装・検証まで
+                </h1>
+
+                <p class="text-lg md:text-xl text-slate-600 leading-relaxed font-normal mb-10">
+                    検知AIを<strong class="text-slate-900 font-semibold">1つのMCU</strong>で動かします。BOMとメモリ使用量の最適化、機器を動かしても精度が落ちない検知、そしてリリース後のモデル保守まで対応します。ルネサスRA・RZ・RXに最も深い知見を持ち、その他のArmベースのプラットフォームにも対応します。
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4">
+                    <a href="mailto:services@gnomons.com?subject=%E3%83%95%E3%82%A3%E3%83%BC%E3%82%B8%E3%83%93%E3%83%AA%E3%83%86%E3%82%A3%E8%AA%BF%E6%9F%BB%E3%81%AE%E3%81%94%E4%BE%9D%E9%A0%BC" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md text-sm transition-colors shadow-md shadow-brand-600/20">
+                        <span>フィージビリティ調査を依頼する</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+
+                    <button onclick="copyEmail()" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-50 hover:bg-brand-50 text-slate-700 hover:text-brand-800 font-mono text-xs rounded-md border border-slate-200 hover:border-brand-300 transition-colors" aria-label="メールアドレスをコピー">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        <span id="copy-text">services@gnomons.com</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-100">
+
+        <!-- Company Identity & Philosophy Section -->
+        <section id="philosophy" class="max-w-5xl mx-auto px-6 py-16">
+            <div class="grid md:grid-cols-12 gap-8 items-stretch">
+                <!-- Name Etymology Box -->
+                <div class="md:col-span-5 p-6 rounded-[10px] bg-brand-50/60 border border-brand-100 flex flex-col justify-between">
+                    <div>
+                        <div class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-3">社名の由来</div>
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <span class="text-2xl font-bold text-slate-900 font-mono">Gnomons</span>
+                            <span class="text-xs font-mono text-slate-500">/ˈnoʊ.mɒns/</span>
+                        </div>
+                        <p class="text-xs font-mono text-slate-700 leading-relaxed mb-4">
+                            ギリシャ語の<strong class="text-slate-900 font-semibold">γνώμων（gnōmōn）</strong>に由来し、<em class="not-italic font-semibold">「知る者、見極める者」</em>を意味します。
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-brand-200/80 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded bg-brand-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <ellipse cx="12" cy="18" rx="8" ry="3" stroke-width="2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18V5l4 6" />
+                            </svg>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            グノモンとは、日時計の影を落として時刻と方角を示す柱のこと。私たちも同じように、ハードウェア開発を前へ進めるための設計の視点と技術的な明快さを提供します。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Vision Statement Box -->
+                <div class="md:col-span-7 p-8 rounded-[10px] bg-brand-700 text-white flex flex-col justify-between shadow-sm">
+                    <div>
+                        <div lang="en" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/30 text-white font-mono text-xs font-semibold mb-5">
+                            Gnomons Identity &middot; Human-Centric
+                        </div>
+
+                        <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white mb-3 leading-snug">
+                            革新的な技術で「人を中心とした」スマートな社会を創造する
+                        </h2>
+
+                        <p lang="en" class="text-white text-base font-semibold leading-relaxed mb-4">
+                            To make smart Human-Centric society enabled by innovative technologies.
+                        </p>
+                    </div>
+
+                    <p class="text-xs text-brand-50 leading-relaxed font-mono border-t border-white/25 pt-4">
+                        技術は人のためにあります。私たちは小さなチップに検知AIを載せ、介護施設の居室や建物の中で静かに動かします。映像はデバイス内にとどめてプライバシーを守り、リリース後も長く保守し続けます。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-100">
+
+        <!-- Core Pillars Section -->
+        <section id="pillars" class="max-w-5xl mx-auto px-6 py-20">
+            <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-12">提供価値</h2>
+
+            <div class="grid md:grid-cols-3 gap-10">
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded bg-brand-50 text-brand-700 border border-brand-100 flex items-center justify-center font-mono text-sm font-bold mb-4">01</div>
+                    <h3 class="text-xl font-bold text-slate-900">ハードウェアでの実証</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        お客様が選定したチップ上で、設定したレイテンシとメモリの目標内に収めて検知モデルを動かします。現在はオンデバイスビジョン、次はカメラとレーダーのフュージョンに取り組みます。
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded bg-brand-50 text-brand-700 border border-brand-100 flex items-center justify-center font-mono text-sm font-bold mb-4">02</div>
+                    <h3 class="text-xl font-bold text-slate-900">検証</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        すべての機能をお客様のボード上で検証します。HIL（Hardware-in-the-Loop）回帰テストとシナリオテストを、変更のたびに再実行します。
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="w-10 h-10 rounded bg-brand-50 text-brand-700 border border-brand-100 flex items-center justify-center font-mono text-sm font-bold mb-4">03</div>
+                    <h3 class="text-xl font-bold text-slate-900">ライフサイクル</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        リリース後の継続的なエンジニアリング（サステイニング）と、現場の環境変化に合わせて検知モデルを最新に保つモデル保守を行います。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-100">
+
+        <!-- Solutions Section -->
+        <section id="solutions" class="max-w-5xl mx-auto px-6 py-20">
+            <div class="mb-10">
+                <p class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">ソリューション</p>
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">カメラ・センサー製品向けのオンデバイス検知</h2>
+                <p class="text-slate-600 text-base leading-relaxed">カメラやセンサーを搭載した製品を、コスト・メモリ・信頼性の面で最適化したいデバイスメーカーの皆様へ。専門エンジニアがお客様のチームと並走して支援します。</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-8 mb-10">
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">見守り・ケアモニタリング</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">介護施設や病院向けの在室・転倒・離床検知。映像はデバイス内にとどめます。</p>
+                </div>
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">施設セキュリティ</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">暗所や逆光の環境でも、機器がぶつかって向きがずれても動き続ける侵入・うろつき検知。</p>
+                </div>
+            </div>
+
+            <h3 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-4">支援できること</h3>
+            <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-slate-600">
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 shrink-0"></span>目標価格に合わせたBOMとメモリ使用量の最適化</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 shrink-0"></span>機器の移動や部屋の変化による検知精度の低下への対策</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 shrink-0"></span>映像や個人情報を外に出さないデバイス内処理</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500 shrink-0"></span>移植・コスト最適化・検証のための専門エンジニアの増強</li>
+            </ul>
+
+            <p class="mt-8 text-sm text-slate-500">別のカメラ・センサー製品を開発中ですか？同じアプローチを適用できます。</p>
+        </section>
+
+        <!-- Featured Projects & R&D -->
+        <section id="projects" class="bg-brand-50/40 border-y border-brand-100/60 py-20">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
+                    <div>
+                        <p class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">エンジニアリングの実践</p>
+                        <h2 class="text-3xl font-bold text-slate-900">研究開発事例</h2>
+                    </div>
+                    <p class="text-sm text-slate-500 max-w-xs">1つのルネサスRA8P1上で動作し、ボード上で実測した成果です。</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 mt-12">
+                    <!-- Demo 1 -->
+                    <a href="/pose-estimation" hreflang="en" class="block bg-white p-8 rounded-[10px] border border-slate-200/80 shadow-sm hover:border-brand-300 transition-colors">
+                        <div class="flex flex-wrap items-center gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Renesas EK-RA8P1</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Ethos-U55 NPU</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">オンデバイスビジョン</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">リアルタイム姿勢推定</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            1つのマイコンでリアルタイムに体の動きを追跡します。カメラ入力から17点の骨格推定まで、PC・クラウド・ネットワークを使わずすべてデバイス上で完結します。推論をEthos-U55 NPUに移すことでAI処理を155 msから12 msに短縮し、カメラの全フレームで骨格を更新しても、フレーム時間の約70%に余裕が残ります。映像はデバイスの外に出ず、出力されるのは体のキーポイントだけです。
+                        </p>
+                        <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-mono text-slate-500 mb-4">
+                            <div><strong class="text-brand-700 font-semibold">成果：</strong>推論12 ms、CPUのみの場合の12.9倍高速</div>
+                            <div><strong class="text-brand-700 font-semibold">展望：</strong>在室・転倒検知の研究へ</div>
+                        </div>
+                        <span class="text-sm text-brand-700 font-medium">詳細を読む（英語） &rarr;</span>
+                    </a>
+
+                    <!-- Demo 2 -->
+                    <a href="/conversational-hand-gestures" hreflang="en" class="block bg-white p-8 rounded-[10px] border border-slate-200/80 shadow-sm hover:border-brand-300 transition-colors">
+                        <div class="flex flex-wrap items-center gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">Renesas EK-RA8P1</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">µT-Kernel 3.0</span>
+                            <span class="px-2.5 py-1 rounded bg-brand-50 text-brand-800 border border-brand-200/60 font-mono text-xs font-medium">ビジョン＋言語</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">ハンドジェスチャーで会話</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            1つのチップで2つのAI処理を実行します。Ethos-U55 NPUでハンドジェスチャー認識を、Cortex-M85で8ビットの言語モデルを動かし、µT-Kernelの固定優先度でスケジューリングすることでカメラのフレーム落ちを防ぎます。子どもが手の形だけで会話でき、カメラのデータはデバイスの外に出ません。
+                        </p>
+                        <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-mono text-slate-500 mb-4">
+                            <div><strong class="text-brand-700 font-semibold">成果：</strong>ライブ映像と並行して2.61 tok/s</div>
+                            <div><strong class="text-brand-700 font-semibold">メモリ：</strong>SRAM 1.9 MB中1.2 MBを使用</div>
+                        </div>
+                        <span class="text-sm text-brand-700 font-medium">詳細を読む（英語） &rarr;</span>
+                    </a>
+                </div>
+
+                <!-- Selected Client Work -->
+                <div class="mt-12">
+                    <h3 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">主な受託実績（NDA締結済み）</h3>
+                    <p class="text-xs text-slate-400 font-mono mb-6">守秘義務のため、お客様名と製品名は非公開としています。すべての案件はNDAに基づいて実施しています。</p>
+                    <div class="divide-y divide-slate-200/80 border-y border-slate-200/80">
+                        <p class="py-4 text-sm text-slate-600 leading-relaxed"><em class="not-italic font-semibold text-slate-900">組み込みビジョンのメモリ最適化</em> — RA8P1上で、SRAM 2 MBの上限内に収めるゼロコピーDMAキャプチャとTFLMワークスペースの設計。</p>
+                        <p class="py-4 text-sm text-slate-600 leading-relaxed"><em class="not-italic font-semibold text-slate-900">RA8アーキテクチャの研究開発</em> — 周辺機能、DSP、Helium/NPUアクセラレーションの多段階評価を、検証テストスイートとともに納品。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Capabilities Matrix -->
+        <section id="stack" class="max-w-5xl mx-auto px-6 py-20">
+            <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-10">技術領域</h2>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">オンデバイスAI・ビジョン</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Renesas RA8P1（Ethos-U55 / Helium）</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>int8量子化</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>省メモリなモデル実装</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>TensorFlow Lite Micro / RUHMI</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>CMSIS-NN / CMSIS-DSP</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">センサーフュージョン</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>カメラ：MIPI CSI-2 / パラレル</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>60 GHzレーダー</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>サーマル / ToF / IMU</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>判定レベルのフュージョンとゲーティング</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>SPI / I2C / UART</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">検証・テスト</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>HIL回帰テスト環境</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>シナリオベーステスト</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>オンデバイスAIの回帰テスト</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>JTAG / SWDデバッグ</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>ロジックアナライザ</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>メモリフットプリントのプロファイリング</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">ライフサイクル・モデル保守</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>OTAによるモデル・ファームウェア更新</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>現場での性能モニタリング</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>モデルの再調整</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>サステイニングエンジニアリング</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">レガシーMCUの移行</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Renesas RA / RZ / RXへの移植</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>ベアメタルからRTOSへ</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>BOMコスト最適化</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Renesas FSP / e² studio</li>
+                    </ul>
+                </div>
+
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <h3 class="text-xs font-mono font-bold uppercase text-slate-900 tracking-wider mb-4 border-b border-slate-200 pb-2">プラットフォーム・基盤技術</h3>
+                    <ul class="space-y-2 text-sm text-slate-600 font-mono">
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>Renesas RA / RZ / RX</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>その他のArm Cortex-M / Cortex-A搭載MCU・SoC</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>FreeRTOS / µT-Kernel / Zephyr</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>組み込みLinux（RZ）</li>
+                        <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>C / C++ / Python</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Approach & Philosophy -->
+        <section id="engagement" class="bg-slate-900 text-white py-20">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="mb-16">
+                    <p class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-500 mb-3">エンジニアリングの理念</p>
+                    <h2 class="text-3xl font-bold tracking-tight mb-4">実機で確かめる</h2>
+                    <p class="text-slate-300 text-base leading-relaxed">
+                        デバイスの機能が完成したと言えるのは、チップ上で実証され、お客様のボードで検証され、リリース後も保守されているときです。私たちはそのすべてのステップを、範囲と費用を事前に明確に合意したうえで支援します。
+                    </p>
+                </div>
+
+                <div class="border-t border-slate-800 pt-12">
+                    <h3 class="text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 mb-8">進め方</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-8">3つのステップで進めます。どのステップも範囲と費用を事前に明確に合意します。</p>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="p-6 bg-slate-800/60 rounded-[10px] border border-slate-700/60">
+                            <span class="text-xs font-mono text-brand-500 font-bold block mb-2">STEP 01</span>
+                            <h4 class="font-bold text-lg mb-2">フィージビリティ調査</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">2〜6週間。範囲と費用は事前に明確に合意します。選定したチップ上で、設定したレイテンシとメモリの目標内でモデルが動くかを確認し、実測に基づく回答と開発計画をお渡しします。</p>
+                        </div>
+                        <div class="p-6 bg-slate-800/60 rounded-[10px] border border-slate-700/60">
+                            <span class="text-xs font-mono text-brand-500 font-bold block mb-2">STEP 02</span>
+                            <h4 class="font-bold text-lg mb-2">機能開発プロジェクト</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">範囲と費用は事前に明確に合意します。機能をお客様のボードに統合・最適化・検証し、HIL回帰テスト環境とあわせてお渡しします。</p>
+                        </div>
+                        <div class="p-6 bg-slate-800/60 rounded-[10px] border border-slate-700/60">
+                            <span class="text-xs font-mono text-brand-500 font-bold block mb-2">STEP 03</span>
+                            <h4 class="font-bold text-lg mb-2">保守サポート契約</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">年間契約。サステイニングエンジニアリングとモデル保守により、現場で機能が安定して動き続けるよう支えます。</p>
+                        </div>
+                    </div>
+                    <div class="mt-8 space-y-2 text-sm text-slate-300 leading-relaxed">
+                        <p>旧世代のMCUをお使いですか？レガシーMCU移行のアセスメントもご相談ください。範囲と費用は事前に明確に合意します。</p>
+                        <p>すでに別のプラットフォームを採用済みですか？お客様が選んだシリコン上で対応します。範囲はフィージビリティ調査を経て決定します。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section id="team" class="max-w-5xl mx-auto px-6 py-20">
+            <div class="mb-12">
+                <p class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">担当メンバー</p>
+                <h2 class="text-3xl font-bold text-slate-900">チーム</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-100 text-brand-700 flex items-center justify-center font-mono text-sm font-bold mb-4">JS</div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-1">佐藤 潤 <span lang="en" class="text-sm font-normal text-slate-400 font-mono">(Jun Sato)</span></h3>
+                    <div class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">戦略</div>
+                    <p class="text-slate-600 text-sm leading-relaxed">東京本社を拠点に、Gnomonsの市場戦略、技術コンサルティング、パートナーシップ開拓を統括。チームのエンジニアリング力を、日本の組み込み・IoT・エッジAI分野のお客様の機会へとつなぎます。</p>
+                </div>
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-100 text-brand-700 flex items-center justify-center font-mono text-sm font-bold mb-4">TT</div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-1">トゥ・タイ <span lang="en" class="text-sm font-normal text-slate-400 font-mono">(Tu Thai)</span></h3>
+                    <div class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">アーキテクチャ</div>
+                    <p class="text-slate-600 text-sm leading-relaxed">Gnomonsのソリューションアーキテクチャとデリバリー戦略を担当。東京とホーチミンの両拠点にまたがり、お客様の要件を実装可能な組み込みシステムへと落とし込みます。初期の範囲検討から納品、その後まで、お客様と密に連携します。</p>
+                </div>
+                <div class="p-6 rounded-[10px] border border-slate-100 bg-slate-50/50">
+                    <div class="w-12 h-12 rounded-full bg-brand-50 border border-brand-100 text-brand-700 flex items-center justify-center font-mono text-sm font-bold mb-4">DP</div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-1">ズイ・ファン <span lang="en" class="text-sm font-normal text-slate-400 font-mono">(Duy Phan)</span></h3>
+                    <div class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">ファームウェア</div>
+                    <p class="text-slate-600 text-sm leading-relaxed">ルネサスの各種シリコンプラットフォームで、ファームウェアの設計と実装を主導。RTOS設計、メモリ制約の厳しいファームウェア、TinyMLの実装に深い知見を持ち、試作から量産展開まで製品品質のコードを提供します。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Global Offices Section -->
+        <section id="offices" class="max-w-5xl mx-auto px-6 py-20 border-b border-slate-100">
+            <div class="mb-12">
+                <p class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-2">グローバル拠点</p>
+                <h2 class="text-3xl font-bold text-slate-900">拠点一覧</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Japan Office -->
+                <div class="p-8 rounded-[10px] border border-slate-200 bg-slate-50/50 hover:border-brand-300 transition-colors">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-1.5 py-0.5 rounded bg-brand-50 border border-brand-200/60 text-brand-700 font-mono text-[10px] font-bold">JP</span>
+                        <span class="text-xs font-mono font-bold uppercase tracking-wider text-brand-800">日本本社・オフィス</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Gnomons Co., Ltd.</h3>
+
+                    <div class="mb-4">
+                        <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">本社</div>
+                        <p class="text-sm text-slate-600 leading-relaxed font-mono mb-1">
+                            〒141-0032<br>
+                            東京都品川区大崎3-13-5-302
+                        </p>
+                        <p class="text-xs font-mono text-slate-500">
+                            <strong class="text-slate-700">電話：</strong>090-9959-0258
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-200/60 mb-4">
+                        <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">オフィス</div>
+                        <p class="text-sm text-slate-600 leading-relaxed font-mono mb-1">
+                            〒141-0032<br>
+                            東京都品川区大崎1-20-8-604
+                        </p>
+                        <p class="text-xs font-mono text-slate-500">
+                            <strong class="text-slate-700">電話：</strong>03-6417-9103 / 090-9959-0258<br>
+                            <strong class="text-slate-700">メール：</strong>services@gnomons.com
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-200/80 text-xs font-mono text-slate-500 flex items-center justify-between">
+                        <span>本社・戦略</span>
+                        <span class="text-brand-700 font-medium">日本・東京</span>
+                    </div>
+                </div>
+
+                <!-- Vietnam Office -->
+                <div class="p-8 rounded-[10px] border border-slate-200 bg-slate-50/50 hover:border-brand-300 transition-colors">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-1.5 py-0.5 rounded bg-brand-50 border border-brand-200/60 text-brand-700 font-mono text-[10px] font-bold">VN</span>
+                        <span class="text-xs font-mono font-bold uppercase tracking-wider text-brand-800">ベトナム開発センター</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Gnomons Vietnam Co., Ltd.</h3>
+                    <p lang="en" class="text-sm text-slate-600 leading-relaxed font-mono mb-4">
+                        Suite 320, 3rd Floor, Indochina Park Tower<br>
+                        4 Nguyen Dinh Chieu, Tan Dinh Ward<br>
+                        Ho Chi Minh City, Vietnam
+                    </p>
+                    <p class="text-xs font-mono text-slate-500 mb-6">
+                        <strong class="text-slate-700">電話：</strong>(+84) 28 6288 2040<br>
+                        <strong class="text-slate-700">メール：</strong>info@gnomons.com
+                    </p>
+                    <div class="pt-4 border-t border-slate-200/80 text-xs font-mono text-slate-500 flex items-center justify-between">
+                        <span>研究開発・エンジニアリング拠点</span>
+                        <span class="text-brand-700 font-medium">ベトナム・ホーチミン市</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-500 font-mono mt-8 text-center sm:text-left">ルネサスの代理店・チャネルパートナーの皆様からのパートナーシップのご相談を歓迎します。お気軽にご連絡ください。</p>
+        </section>
+
+        <!-- Final CTA / Contact Section -->
+        <section id="contact" class="max-w-5xl mx-auto px-6 py-24 text-center">
+            <div class="max-w-2xl mx-auto">
+                <p class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700 mb-4">お問い合わせ</p>
+                <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-6">次のエッジシステム開発を始めませんか？</h2>
+
+                <p class="text-slate-600 leading-relaxed mb-10">
+                    現在、新規のコンサルティング案件とソフトウェア開発プロジェクトを受け付けています。ハードウェアの仕様、スケジュール、主な要件をお知らせください。
+                </p>
+
+                <div class="bg-brand-50/50 border border-brand-200/80 px-4 py-8 sm:p-8 rounded-[10px] mb-8 inline-block w-full max-w-lg shadow-sm">
+                    <div class="text-xs font-mono text-brand-800 mb-2 uppercase tracking-wide font-semibold">メールでのお問い合わせ</div>
+                    <a href="mailto:services@gnomons.com?subject=%E3%83%95%E3%82%A3%E3%83%BC%E3%82%B8%E3%83%93%E3%83%AA%E3%83%86%E3%82%A3%E8%AA%BF%E6%9F%BB%E3%81%AE%E3%81%94%E4%BE%9D%E9%A0%BC" class="text-lg sm:text-3xl font-bold text-slate-900 hover:text-brand-600 transition-colors break-all">
+                        services@gnomons.com
+                    </a>
+                    <div class="mt-4 pt-4 border-t border-brand-200/60 flex items-center justify-center gap-2 text-xs text-brand-800">
+                        <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>担当者より速やかにご連絡いたします</span>
+                    </div>
+                </div>
+
+                <div>
+                    <a href="mailto:services@gnomons.com?subject=%E3%83%95%E3%82%A3%E3%83%BC%E3%82%B8%E3%83%93%E3%83%AA%E3%83%86%E3%82%A3%E8%AA%BF%E6%9F%BB%E3%81%AE%E3%81%94%E4%BE%9D%E9%A0%BC" class="inline-flex items-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-md text-base transition-colors shadow-md shadow-brand-600/20">
+                        <span>メールを送る</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-100 bg-white py-12">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <div>
+                    &copy; 2026 Gnomons. 2013年設立。All rights reserved. 組み込み機器向けオンデバイスAI
+                </div>
+                <div lang="en" class="flex items-center gap-6 font-mono text-brand-800">
+                    <span>Constrained-Silicon Specialists</span>
+                    <span>Verified on Real Hardware</span>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-400 text-center sm:text-left">
+                <span>ルネサスおよびルネサスのロゴは、ルネサス エレクトロニクス株式会社の商標です。その他の製品名および会社名は、各社の商標です。</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+            document.getElementById('menu-icon-open').classList.toggle('hidden');
+            document.getElementById('menu-icon-close').classList.toggle('hidden');
+        }
+        function closeMobileMenu() {
+            document.getElementById('mobile-menu').classList.add('hidden');
+            document.getElementById('menu-icon-open').classList.remove('hidden');
+            document.getElementById('menu-icon-close').classList.add('hidden');
+        }
+        function copyEmail() {
+            const email = "services@gnomons.com";
+            navigator.clipboard.writeText(email).then(() => {
+                const copyText = document.getElementById('copy-text');
+                const originalText = copyText.innerText;
+                copyText.innerText = "コピーしました";
+                setTimeout(() => {
+                    copyText.innerText = originalText;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

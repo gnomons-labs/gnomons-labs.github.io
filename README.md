@@ -8,7 +8,8 @@ https://gnomons.com
 
 ## Files
 
-- `index.html` — the landing page
+- `index.html` — the landing page (English)
+- `ja/index.html` — the landing page in Japanese, served at `/ja/`
 - `cyber-resilience-by-design.html` — subpage: Cyber resilience by design
 - `conversational-hand-gestures.html` — subpage: Conversational hand gestures demo
 - `pose-estimation.html` — subpage: PoseNet pose estimation on the EK-RA8P1, NPU vs CPU-only
@@ -16,7 +17,7 @@ https://gnomons.com
 - `wordmark.png` — "Gnomons" wordmark image (used in the header)
 - `favicon.ico` — browser tab icon
 
-All image files must stay in the same root directory as `index.html`, since they're referenced with relative paths.
+All image files must stay in the same root directory as `index.html`, since they're referenced with relative paths (`ja/index.html` uses `../`).
 
 ## Local preview
 

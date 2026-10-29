@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Gnomons ships and verifies on-device AI features on Renesas and other MCUs for device makers: optimized BOM, robust detection, maintained after launch.">
     <title>Gnomons — On-Device AI for Embedded Devices</title>
+    <link rel="canonical" href="https://www.gnomons.com/">
+    <link rel="alternate" hreflang="en" href="https://www.gnomons.com/">
+    <link rel="alternate" hreflang="ja" href="https://www.gnomons.com/ja/">
+    <link rel="alternate" hreflang="x-default" href="https://www.gnomons.com/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -57,6 +61,11 @@
             </nav>
 
             <div class="flex items-center gap-3 shrink-0">
+                <div class="hidden sm:flex items-center gap-1.5 text-xs font-mono font-medium text-slate-500" role="group" aria-label="Language">
+                    <a href="/" hreflang="en" aria-current="page" class="text-slate-900 font-semibold">EN</a>
+                    <span class="text-slate-300" aria-hidden="true">/</span>
+                    <a href="/ja/" hreflang="ja" lang="ja" class="hover:text-brand-700 transition-colors">日本語</a>
+                </div>
                 <a href="#contact" class="whitespace-nowrap text-sm font-semibold text-brand-700 border border-brand-600 hover:bg-brand-50 px-4 py-2 rounded-md transition-colors">
                     Get in Touch
                 </a>
@@ -81,6 +90,11 @@
                 <a href="#engagement" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Engagement</a>
                 <a href="#team" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Team</a>
                 <a href="#offices" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Offices</a>
+                <div class="pt-4 border-t border-slate-100 flex items-center gap-2 font-mono text-xs text-slate-500" role="group" aria-label="Language">
+                    <a href="/" hreflang="en" aria-current="page" class="text-slate-900 font-semibold">EN</a>
+                    <span class="text-slate-300" aria-hidden="true">/</span>
+                    <a href="/ja/" hreflang="ja" lang="ja" class="hover:text-brand-700 transition-colors">日本語</a>
+                </div>
             </nav>
         </div>
     </header>
@@ -550,11 +564,8 @@
                     <span>Verified on Real Hardware</span>
                 </div>
             </div>
-            <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+            <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-400 text-center sm:text-left">
                 <span>Renesas and the Renesas logo are trademarks of Renesas Electronics Corporation. All other product and company names are trademarks of their respective owners.</span>
-                <button onclick="translateToJapanese()" class="whitespace-nowrap text-slate-500 hover:text-brand-700 underline underline-offset-2 transition-colors" aria-label="Translate this page to Japanese">
-                    日本語で読む
-                </button>
             </div>
         </div>
     </footer>
@@ -569,10 +580,6 @@
             document.getElementById('mobile-menu').classList.add('hidden');
             document.getElementById('menu-icon-open').classList.remove('hidden');
             document.getElementById('menu-icon-close').classList.add('hidden');
-        }
-        function translateToJapanese() {
-            const url = "https://translate.google.com/translate?sl=auto&tl=ja&u=" + encodeURIComponent(window.location.href);
-            window.open(url, "_blank", "noopener");
         }
         function copyEmail() {
             const email = "services@gnomons.com";

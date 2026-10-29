@@ -246,10 +246,17 @@ paragraph → primary button with `services@gnomons.com` and an arrow. The `mail
 carries a page-specific subject, e.g. `?subject=Cyber%20Resilience%20Engineering%20Inquiry`.
 
 ### Footer & utilities
-Landing footer: copyright line, two mono brand taglines, trademark disclaimer at 11px,
-and the `日本語で読む` translate link. Subpages: top bar with `← gnomons.com` back link
-(left) and `日本語で読む` button (right). Both use the same `translateToJapanese()`
-helper (Google Translate, opens in a new tab with `noopener`).
+Landing footer: copyright line, two mono brand taglines and the trademark disclaimer at
+11px. The language switch lives in the header only (see below). Subpages: top bar with `← gnomons.com` back link (left) and `日本語で読む` button
+(right), using the `translateToJapanese()` helper (Google Translate, opens in a new tab
+with `noopener`), since subpages have no Japanese version yet.
+
+### Language switch
+The landing page exists in English (`/index.html`) and Japanese (`/ja/index.html`).
+Both headers carry an `EN / 日本語` switch (mono 12px, current language `slate-900`
+semibold with `aria-current="page"`), shown from `sm` up and repeated at the bottom of
+the mobile menu. Both heads carry `canonical` plus `hreflang` links for `en`, `ja` and
+`x-default` (→ English). Change copy on both pages together.
 
 ### Video
 16:9 `.video-wrap`, 10px radius, border + card shadow, `youtube-nocookie.com` embed,
@@ -320,7 +327,8 @@ classes so they inherit the tokens.
 - Never encode status by color alone — pair with a text pill or legend label.
 - Meaningful `alt` on logos; `aria-label` on icon-only buttons (menu, translate).
 - Diagrams: `role="img"` + descriptive `aria-label`, plus a visible caption.
-- Keep `html lang` accurate (`en`); mark Japanese passages with `lang="ja"` where practical.
+- Keep `html lang` accurate (`en`, or `ja` on `/ja/`); mark passages in the other
+  language with `lang="ja"` / `lang="en"` where practical.
 - Respect the existing focus behavior of native links/buttons; don't remove outlines.
 
 ---
