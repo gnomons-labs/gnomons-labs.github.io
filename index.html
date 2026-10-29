@@ -38,13 +38,13 @@
 
     <!-- Top Navigation / Brand Header -->
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
-        <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="#" class="group flex items-center gap-3">
+        <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between gap-6">
+            <a href="#" class="group flex items-center gap-3 shrink-0">
                 <img src="logo.png" alt="Gnomons logo" class="w-9 h-9 object-contain">
                 <img src="wordmark.png" alt="Gnomons" class="h-9 object-contain">
             </a>
-            
-            <nav class="hidden lg:flex items-center gap-6 xl:gap-8 whitespace-nowrap text-sm font-medium text-slate-600">
+
+            <nav class="hidden xl:flex items-center gap-5 whitespace-nowrap text-sm font-medium text-slate-600">
                 <a href="#philosophy" class="hover:text-brand-700 transition-colors">Philosophy</a>
                 <a href="#pillars" class="hover:text-brand-700 transition-colors">Services</a>
                 <a href="#segment" class="hover:text-brand-700 transition-colors">Who We Serve</a>
@@ -54,11 +54,11 @@
                 <a href="#team" class="hover:text-brand-700 transition-colors">Team</a>
             </nav>
 
-            <div class="flex items-center gap-3">
-                <a href="#contact" class="text-sm font-semibold text-brand-700 border border-brand-600 hover:bg-brand-50 px-4 py-2 rounded transition-all">
+            <div class="flex items-center gap-3 shrink-0">
+                <a href="#contact" class="whitespace-nowrap text-sm font-semibold text-brand-700 border border-brand-600 hover:bg-brand-50 px-4 py-2 rounded transition-all">
                     Get in Touch
                 </a>
-                <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-600 hover:text-brand-700 transition-colors p-1" aria-label="Toggle menu">
+                <button onclick="toggleMobileMenu()" class="xl:hidden text-slate-600 hover:text-brand-700 transition-colors p-1" aria-label="Toggle menu">
                     <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-100 bg-white">
+        <div id="mobile-menu" class="hidden xl:hidden border-t border-slate-100 bg-white">
             <nav class="max-w-5xl mx-auto px-6 py-4 flex flex-col gap-4 text-sm font-medium text-slate-600">
                 <a href="#philosophy" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Philosophy</a>
                 <a href="#pillars" onclick="closeMobileMenu()" class="hover:text-brand-700 transition-colors">Services</a>
