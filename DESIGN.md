@@ -361,20 +361,14 @@ classes so they inherit the tokens.
 
 ## 13. Known gaps (current pages vs. these guidelines)
 
-Fix these when the relevant page is next touched:
+None open. Resolved in the last pass:
 
-1. **Subpages have no document head.** `cyber-resilience-by-design.html` and
-   `conversational-hand-gestures.html` begin with `<title>`/`<style>` — no doctype,
-   `<html lang>`, viewport meta, or favicon. Browsers render them in quirks mode and,
-   without the viewport meta, phones show the desktop layout zoomed out, so the
-   760px/680px breakpoints never apply. Wrap them in the template in §12.
-2. **Two radius scales.** Landing uses 4px buttons / 8px cards; subpages use 6px / 10px.
-   Converge on 6px buttons and 10px cards (Tailwind `rounded-md` / `rounded-[10px]`).
-3. **Off-palette green.** The landing page's vision panel uses `bg-emerald-500`
-   (`#10b981`) with `font-extrabold`, while Inter 800 isn't loaded on that page.
-   Either use `brand-600` with white text, or document emerald as a named exception,
-   and load weight 800.
-4. **Heading semantics.** On the landing page the small mono eyebrow is the `<h2>` and
-   the visible title is an `<h3>`. Prefer a `<p>`/`<div>` for the eyebrow and `<h2>` for
-   the title, as the subpages do.
-5. **README file list** omits the two subpages.
+- All subpages now start with the §12 document head (doctype, `lang`, viewport,
+  description, favicon), so the 760px/680px breakpoints apply on phones.
+- Radii converged on 6px buttons (`rounded-md`) and 10px cards/panels (`rounded-[10px]`).
+- The landing vision panel uses `brand-700` with white text instead of off-palette
+  emerald (`brand-700` rather than `brand-600` so 12px text clears 4.5:1 contrast);
+  Inter 800 and JetBrains Mono 600/700 are now loaded.
+- Landing eyebrows are `<p>` with the visible title as `<h2>`; `brand-200`/`brand-300`
+  are defined in the Tailwind config so tag borders and card hover borders render.
+- README lists every subpage.

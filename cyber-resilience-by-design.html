@@ -1,4 +1,11 @@
-<title>Cyber Resilience by Design</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Resilience by Design — Gnomons</title>
+<meta name="description" content="Firmware built against EN 303 645 — the baseline behind JC-STAR and the EU Cyber Resilience Act — on a Renesas RA8P1 Cortex-M85 microcontroller.">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
@@ -26,9 +33,11 @@
 
 *{box-sizing:border-box;}
 body{
+  margin:0;
   background:var(--paper); color:var(--ink);
   font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height:1.6;
+  -webkit-font-smoothing:antialiased;
 }
 ::selection{ background:var(--brand-soft); color:var(--brand-darker); }
 a{ color:inherit; }
@@ -263,10 +272,12 @@ h2{
 }
 .translate-btn:hover{ color:var(--brand-dark); border-color:var(--brand-line); }
 </style>
+</head>
+<body>
 
 <div class="wrap" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
   <a class="back" href="https://www.gnomons.com/">&larr; gnomons.com</a>
-  <button class="translate-btn" onclick="translateToJapanese()" style="margin-top:22px;">日本語で読む</button>
+  <button class="translate-btn" onclick="translateToJapanese()" style="margin-top:22px;" aria-label="Read this page in Japanese">日本語で読む</button>
 </div>
 
 <div class="wrap">
@@ -284,7 +295,7 @@ h2{
       </p>
     </div>
     <div class="diagram-box">
-      <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Application code on the right reaches the protected zone on the left only through a locked, checked gate.">
         <rect x="20" y="38" width="96" height="104" rx="10" fill="var(--brand-tint)" stroke="var(--brand)" stroke-width="1.4"/>
         <text x="68" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="var(--brand-darker)" letter-spacing="0.5">PROTECTED ZONE</text>
         <rect x="37" y="65" width="61" height="50" rx="6" fill="none" stroke="var(--brand)" stroke-width="1.3" stroke-dasharray="3 3"/>
@@ -716,7 +727,7 @@ h2{
     </p>
     <a class="cta-btn" href="mailto:services@gnomons.com?subject=Cyber%20Resilience%20Engineering%20Inquiry">
       services@gnomons.com
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
     </a>
   </div>
 
@@ -728,3 +739,5 @@ function translateToJapanese() {
   window.open(url, "_blank", "noopener");
 }
 </script>
+</body>
+</html>
