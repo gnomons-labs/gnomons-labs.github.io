@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physical AI at the Edge — Gnomons</title>
+<meta name="description" content="On-device perception for physical AI: pose, gesture and sensor-fusion firmware that lets devices see and respond to people in real time on Renesas microcontrollers, with no cloud.">
+<link rel="canonical" href="https://www.gnomons.com/physical-ai">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --paper:#ffffff;
+  --panel:#f8fafc;      /* slate-50 */
+  --ink:#0f172a;        /* slate-900 */
+  --ink-soft:#475569;   /* slate-600 */
+  --ink-mute:#64748b;   /* slate-500 */
+  --ink-faint:#94a3b8;  /* slate-400 */
+  --line:#e2e8f0;       /* slate-200 */
+  --line-soft:#f1f5f9;  /* slate-100 */
+  --brand:#16a34a;      /* green-600 */
+  --brand-dark:#15803d; /* green-700 */
+  --brand-darker:#166534;/* green-800 */
+  --brand-soft:#dcfce7; /* green-100 */
+  --brand-tint:#f0fdf4; /* green-50 */
+  --brand-line:#bbf7d0; /* green-200 */
+  --shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 20px -10px rgba(15,23,42,0.10);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper); color:var(--ink);
+  font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{ background:var(--brand-soft); color:var(--brand-darker); }
+a{ color:inherit; }
+
+.wrap{ max-width:1040px; margin:0 auto; padding:0 24px; }
+
+/* Back link */
+.back{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-mute);
+  text-decoration:none; padding:22px 0 0;
+}
+.back:hover{ color:var(--brand-dark); }
+
+/* Hero */
+.hero{
+  display:grid; grid-template-columns:1.15fr 0.85fr; gap:44px;
+  align-items:center; padding:40px 0 56px;
+  border-bottom:1px solid var(--line-soft);
+}
+@media (max-width:760px){ .hero{ grid-template-columns:1fr; } }
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--brand-dark);
+  background:var(--brand-tint); border:1px solid var(--brand-line);
+  border-radius:99px; padding:5px 12px 5px 10px; margin-bottom:18px;
+}
+.eyebrow .dot{ width:7px; height:7px; border-radius:99px; background:var(--brand); flex-shrink:0; }
+h1{
+  font-family:'Inter', sans-serif; font-weight:800; letter-spacing:-0.02em;
+  font-size:clamp(32px,4.6vw,48px); line-height:1.1; margin:0 0 18px;
+  color:var(--ink); text-wrap:balance;
+}
+.hero p{ font-size:17px; color:var(--ink-soft); margin:0; line-height:1.65; }
+
+.diagram-box{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  box-shadow:var(--shadow); padding:20px 18px 16px;
+}
+.diagram-box svg{ width:100%; height:auto; display:block; }
+.diagram-cap{
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-mute);
+  text-align:center; margin-top:10px; letter-spacing:0.01em;
+}
+
+/* Section rhythm */
+section{ padding:52px 0; border-bottom:1px solid var(--line-soft); }
+section:last-of-type{ border-bottom:none; }
+.section-label{
+  font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-dark);
+  margin-bottom:8px;
+}
+h2{
+  font-family:'Inter', sans-serif; font-weight:700; letter-spacing:-0.01em;
+  font-size:27px; margin:0 0 16px; text-wrap:balance; color:var(--ink);
+}
+.lede{ font-size:15.5px; color:var(--ink-soft); margin:0 0 8px; }
+.lede strong{ color:var(--ink); }
+.tech-note{
+  font-family:'JetBrains Mono', monospace; font-size:11.5px;
+  color:var(--ink-mute); line-height:1.5;
+}
+
+/* Definition band */
+.why-band{
+  margin-top:22px; background:var(--brand-tint); border:1px solid var(--brand-line);
+  border-radius:10px; padding:22px 26px;
+}
+.why-band p{ margin:0; font-size:15.5px; color:var(--ink-soft); }
+.why-band p + p{ margin-top:8px; }
+.why-band strong{ color:var(--brand-darker); }
+
+/* Cards */
+.cards{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }
+.cards.three{ grid-template-columns:repeat(3,1fr); }
+@media (max-width:680px){ .cards, .cards.three{ grid-template-columns:1fr; } }
+.card{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  padding:24px 24px 22px; box-shadow:var(--shadow);
+  display:flex; flex-direction:column; gap:11px; position:relative;
+  transition:border-color .15s ease; text-decoration:none;
+}
+.card:hover{ border-color:var(--brand-line); }
+.card h3{
+  font-family:'Inter', sans-serif; font-weight:700; font-size:18px; margin:0;
+  line-height:1.32; color:var(--ink);
+}
+.card p{ font-size:14px; color:var(--ink-soft); margin:0; }
+.card .why-line{
+  font-size:13.5px; font-weight:600; color:var(--brand-darker);
+  padding-top:11px; border-top:1px solid var(--line-soft); margin-top:auto;
+}
+.provision{
+  font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-dark);
+}
+.chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.chip{
+  font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:500;
+  padding:3px 9px; border-radius:4px;
+  background:var(--brand-tint); color:var(--brand-darker); border:1px solid var(--brand-line);
+}
+.chip.dim{ background:transparent; color:var(--ink-mute); border-color:var(--line); }
+.chip-legend{ display:flex; flex-wrap:wrap; gap:8px 20px; margin-top:16px; }
+.legend-item{
+  display:flex; align-items:center; gap:7px;
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-mute);
+}
+.legend-swatch{ width:12px; height:12px; border-radius:3px; flex-shrink:0; border:1.3px solid; }
+.legend-swatch.built{ background:var(--brand-soft); border-color:var(--brand); }
+.legend-swatch.planned{ background:var(--paper); border-color:#cbd5e1; border-style:dashed; }
+.legend-swatch.hw{ background:var(--panel); border-color:var(--line); }
+
+/* Step label */
+.step{
+  font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700;
+  color:var(--brand-dark); letter-spacing:0.04em;
+}
+
+/* Architecture diagram */
+.arch-wrap{
+  background:var(--paper); border:1px solid var(--line); border-radius:10px;
+  padding:18px 18px 6px; box-shadow:var(--shadow); overflow-x:auto; margin:22px 0 0;
+}
+.arch-wrap svg{ width:100%; height:auto; display:block; min-width:720px; }
+.arch-wrap figcaption{ font-size:12.5px; color:var(--ink-mute); padding:10px 4px 14px; }
+.diagram-legend{ display:flex; flex-wrap:wrap; gap:8px 20px; padding:0 4px 16px; }
+.band{ fill:none; stroke:var(--line); stroke-width:1.2; }
+.band-label{
+  font-family:'JetBrains Mono', monospace; font-size:9.5px; font-weight:600;
+  letter-spacing:0.06em; fill:var(--ink-mute); text-transform:uppercase;
+}
+.blk-built{ fill:var(--brand-soft); stroke:var(--brand); stroke-width:1.3; }
+.blk-planned{ fill:none; stroke:#cbd5e1; stroke-width:1.3; stroke-dasharray:4 3; }
+.blk-hw{ fill:var(--panel); stroke:var(--line); stroke-width:1.2; }
+.blk-title{
+  font-family:'Inter', sans-serif; font-weight:700;
+  font-size:12px; fill:var(--ink); text-anchor:middle;
+}
+.blk-title.dim{ fill:var(--ink-mute); }
+.blk-title-hw{
+  font-family:'JetBrains Mono', monospace; font-weight:600; font-size:10px;
+  fill:var(--ink); text-anchor:middle; letter-spacing:0.01em;
+}
+.blk-sub{ font-family:'Inter', sans-serif; font-size:8.7px; fill:var(--ink-mute); text-anchor:middle; }
+.flow{ fill:none; stroke:#94a3b8; stroke-width:1.3; }
+.flow-label{ font-family:'JetBrains Mono', monospace; font-size:8.5px; fill:var(--ink-mute); text-anchor:middle; }
+
+/* Stat strip */
+.stat-strip{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:22px; }
+@media (max-width:680px){ .stat-strip{ grid-template-columns:1fr; } }
+.stat-tile{
+  background:var(--brand-tint); border:1px solid var(--brand-line); border-radius:10px;
+  padding:18px 20px; text-align:center;
+}
+.stat-num{
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:26px;
+  color:var(--brand-darker); letter-spacing:-0.01em; margin-bottom:6px;
+}
+.stat-label{ font-size:12.5px; color:var(--ink-soft); line-height:1.4; }
+
+.more{ font-size:14px; font-weight:600; color:var(--brand-dark); }
+
+/* CTA */
+.cta{
+  background:var(--brand-tint); border:1px solid var(--brand-line);
+  border-radius:10px; padding:44px 40px; margin:0 0 56px; text-align:center;
+}
+@media (max-width:680px){ .cta{ padding:36px 22px; } }
+.cta .section-label{ display:block; }
+.cta h2{ margin:0 auto 14px; font-size:28px; }
+.cta p{ color:var(--ink-soft); font-size:15px; margin:0 auto 26px; max-width:620px; }
+.cta-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--brand); color:#fff; font-weight:600; font-size:15px;
+  padding:13px 26px; border-radius:6px; text-decoration:none;
+  box-shadow:0 8px 20px -8px rgba(22,163,74,0.45);
+  transition:background .15s ease;
+}
+.cta-btn:hover{ background:var(--brand-dark); }
+
+.translate-btn{
+  font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-mute);
+  background:none; border:1px solid var(--line); border-radius:6px;
+  padding:5px 10px; cursor:pointer; transition:color .15s ease, border-color .15s ease;
+}
+.translate-btn:hover{ color:var(--brand-dark); border-color:var(--brand-line); }
+</style>
+</head>
+<body>
+
+<div class="wrap" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+  <a class="back" href="https://www.gnomons.com/">&larr; gnomons.com</a>
+  <button class="translate-btn" onclick="translateToJapanese()" style="margin-top:22px;" aria-label="Read this page in Japanese">日本語で読む</button>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow"><span class="dot"></span>Physical AI &middot; Renesas RA8P1 &middot; On-Device</div>
+      <h1>Edge intelligence for devices that see and respond to people</h1>
+      <p>
+        Physical AI starts at the sensor. We build the perception and
+        decision layer that lets cameras, sensors and machines understand
+        the people around them. It runs on the microcontroller itself, in
+        real time, without a cloud connection.
+      </p>
+    </div>
+    <div class="diagram-box">
+      <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="On the left, a microcontroller turns a person in view into a skeleton. An arrow leads to the right, where the device acts on it: a wave gets a reply, a fall raises an alert, someone stepping closer wakes the display.">
+        <rect x="20" y="38" width="96" height="104" rx="10" fill="var(--brand-tint)" stroke="var(--brand)" stroke-width="1.4"/>
+        <text x="68" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="var(--brand-darker)" letter-spacing="0.5">ON THE MCU</text>
+        <!-- skeleton: bones -->
+        <g stroke="var(--brand)" stroke-width="1.6" stroke-linecap="round" fill="none">
+          <path d="M56 70 L80 70"/>
+          <path d="M56 70 L46 60 L40 48"/>
+          <path d="M80 70 L88 86 L92 101"/>
+          <path d="M56 70 L62 100 M80 70 L74 100"/>
+          <path d="M62 100 L74 100"/>
+          <path d="M62 100 L60 117 L58 132"/>
+          <path d="M74 100 L76 117 L78 132"/>
+        </g>
+        <!-- skeleton: keypoints -->
+        <g fill="var(--brand-darker)">
+          <circle cx="68" cy="56" r="5"/>
+          <circle cx="56" cy="70" r="2.6"/><circle cx="80" cy="70" r="2.6"/>
+          <circle cx="46" cy="60" r="2.6"/><circle cx="88" cy="86" r="2.6"/>
+          <circle cx="40" cy="48" r="2.6"/><circle cx="92" cy="101" r="2.6"/>
+          <circle cx="62" cy="100" r="2.6"/><circle cx="74" cy="100" r="2.6"/>
+          <circle cx="60" cy="117" r="2.6"/><circle cx="76" cy="117" r="2.6"/>
+          <circle cx="58" cy="132" r="2.6"/><circle cx="78" cy="132" r="2.6"/>
+        </g>
+        <path d="M130 90 L170 90" stroke="var(--brand)" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M170 90 L166 87 L166 93 Z" fill="var(--brand)"/>
+        <rect x="184" y="38" width="96" height="104" rx="10" fill="var(--panel)" stroke="var(--line)" stroke-width="1.4"/>
+        <text x="232" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="var(--ink-mute)" letter-spacing="0.3">DEVICE ACTS</text>
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="var(--ink)">
+          <text x="196" y="66">wave</text>
+          <text x="196" y="96">fall</text>
+          <text x="196" y="126">step in</text>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="var(--brand-darker)" text-anchor="end">
+          <text x="270" y="66">reply</text>
+          <text x="270" y="96">alert</text>
+          <text x="270" y="126">wake</text>
+        </g>
+        <g stroke="#cbd5e1" stroke-width="1">
+          <line x1="184" y1="80" x2="280" y2="80"/>
+          <line x1="184" y1="110" x2="280" y2="110"/>
+        </g>
+      </svg>
+      <div class="diagram-cap">sensor in &middot; decision out &middot; no cloud in between</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-label">What we mean</div>
+    <h2>Physical AI is AI that senses people and acts in the real world</h2>
+    <p class="lede">
+      A robot, a kiosk, a care-room sensor or a fitness mirror all have the
+      same first job: work out where people are and what they are doing,
+      then act on it within a fraction of a second. That first step is the
+      part we build.
+    </p>
+    <div class="why-band">
+      <p>
+        <strong>Our part is the layer at the sensor.</strong> Camera and
+        sensor input in, a skeleton, a gesture or a presence signal out,
+        and a decision made on the same chip &mdash; inside the timing
+        budget of an embedded system.
+      </p>
+      <p>
+        Images never need to leave the device, so there is no cloud
+        latency, no network dependency and a simpler privacy story.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">How we contribute</div>
+    <h2>From raw sensor data to a decision on the device</h2>
+    <p class="lede">
+      Four layers, each sized to fit on a microcontroller alongside the
+      rest of the product.
+    </p>
+    <div class="cards">
+      <div class="card">
+        <span class="provision">01 &middot; Sense</span>
+        <h3>Get clean input from the sensors</h3>
+        <p>Camera capture over MIPI CSI-2 or parallel interfaces, with other sensors joined over SPI, I2C and UART and combined at the decision level.</p>
+        <div class="chips">
+          <span class="chip">Camera</span>
+          <span class="chip dim">60 GHz radar</span>
+          <span class="chip dim">Thermal / ToF</span>
+          <span class="chip dim">IMU</span>
+        </div>
+      </div>
+      <div class="card">
+        <span class="provision">02 &middot; Understand</span>
+        <h3>Turn the picture into a few useful points</h3>
+        <p>A 17-point body skeleton or 21 hand joints per frame, then simple rules on top that turn those points into a gesture, a posture or a presence signal.</p>
+        <div class="chips">
+          <span class="chip">Body pose</span>
+          <span class="chip">Hand gestures</span>
+          <span class="chip dim">Presence / fall</span>
+          <span class="chip dim">Bed-exit</span>
+        </div>
+      </div>
+      <div class="card">
+        <span class="provision">03 &middot; Respond</span>
+        <h3>Decide and act on the same chip</h3>
+        <p>Local decisions with no network round-trip. Vision and a small language model can share one MCU, so a device can take turns with a person through gestures alone.</p>
+        <div class="chips">
+          <span class="chip">Vision + language model</span>
+          <span class="chip">Gesture turn-taking</span>
+        </div>
+      </div>
+      <div class="card">
+        <span class="provision">04 &middot; Stay real-time</span>
+        <h3>Never delay the camera or the display</h3>
+        <p>Fixed-priority scheduling keeps capture and display on time; the AI runs in the spare CPU time and on the NPU.</p>
+        <div class="chips">
+          <span class="chip">µT-Kernel 3.0</span>
+          <span class="chip">Ethos-U55 NPU</span>
+          <span class="chip">FreeRTOS</span>
+          <span class="chip dim">Zephyr</span>
+        </div>
+      </div>
+    </div>
+    <div class="chip-legend">
+      <span class="legend-item"><span class="legend-swatch built"></span>Delivered in our builds</span>
+      <span class="legend-item"><span class="legend-swatch planned"></span>Offered, not yet in a public build</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Architecture</div>
+    <h2>Sense, understand and respond on one microcontroller</h2>
+    <p class="lede">
+      The camera path and the AI share one chip. The NPU reads the
+      body or the hands; the CPU turns that into a decision; the RTOS keeps
+      the camera and display on schedule throughout.
+    </p>
+    <figure class="arch-wrap">
+      <svg viewBox="0 0 860 250" xmlns="http://www.w3.org/2000/svg"
+           role="img" aria-label="Sensors feed a perception stage on the Ethos-U55 NPU that finds body or hand points, which feeds a decision stage on the Cortex-M85 CPU running gesture rules and a language model, which drives the device's display or output. Camera, pose, hand gestures and the language model are built; radar and ToF input and presence and fall rules are planned. All of it runs on one Renesas RA8P1 under a real-time OS.">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+          </marker>
+        </defs>
+
+        <rect class="band" x="16" y="16" width="828" height="186" rx="10"/>
+        <text class="band-label" x="30" y="34">Renesas RA8P1 &middot; one microcontroller</text>
+
+        <!-- Sense -->
+        <text class="band-label" x="98" y="58" text-anchor="middle">Sense</text>
+        <rect class="blk-built" x="32" y="68" width="132" height="54" rx="8"/>
+        <text class="blk-title" x="98" y="92">Camera</text>
+        <text class="blk-sub" x="98" y="107">MIPI CSI-2 / parallel</text>
+        <rect class="blk-planned" x="32" y="132" width="132" height="54" rx="8"/>
+        <text class="blk-title dim" x="98" y="156">Radar / ToF / IMU</text>
+        <text class="blk-sub" x="98" y="171">SPI / I2C / UART</text>
+
+        <!-- Understand -->
+        <text class="band-label" x="314" y="58" text-anchor="middle">Understand &middot; Ethos-U55 NPU</text>
+        <rect class="blk-built" x="214" y="68" width="200" height="54" rx="8"/>
+        <text class="blk-title" x="314" y="92">Body &amp; hand points</text>
+        <text class="blk-sub" x="314" y="107">17-point skeleton &middot; 21 hand joints</text>
+        <rect class="blk-planned" x="214" y="132" width="200" height="54" rx="8"/>
+        <text class="blk-title dim" x="314" y="156">Sensor fusion &amp; gating</text>
+        <text class="blk-sub" x="314" y="171">decision-level</text>
+
+        <!-- Respond -->
+        <text class="band-label" x="546" y="58" text-anchor="middle">Respond &middot; Cortex-M85</text>
+        <rect class="blk-built" x="464" y="68" width="164" height="54" rx="8"/>
+        <text class="blk-title" x="546" y="92">Gestures &amp; language</text>
+        <text class="blk-sub" x="546" y="107">rules + 8-bit language model</text>
+        <rect class="blk-planned" x="464" y="132" width="164" height="54" rx="8"/>
+        <text class="blk-title dim" x="546" y="156">Presence &amp; fall rules</text>
+        <text class="blk-sub" x="546" y="171">from body points</text>
+
+        <!-- Output -->
+        <rect class="blk-hw" x="678" y="96" width="150" height="62" rx="8"/>
+        <text class="blk-title-hw" x="753" y="122">DEVICE OUTPUT</text>
+        <text class="blk-sub" x="753" y="138">display &middot; alert &middot; motion</text>
+
+        <!-- flows -->
+        <line class="flow" x1="164" y1="95" x2="212" y2="95" marker-end="url(#arrow)"/>
+        <line class="flow" x1="164" y1="159" x2="212" y2="159" marker-end="url(#arrow)"/>
+        <line class="flow" x1="414" y1="95" x2="462" y2="95" marker-end="url(#arrow)"/>
+        <line class="flow" x1="414" y1="159" x2="462" y2="159" marker-end="url(#arrow)"/>
+        <path class="flow" d="M628 95 L652 95 L652 118 L676 118" marker-end="url(#arrow)"/>
+        <path class="flow" d="M628 159 L652 159 L652 138 L676 138" marker-end="url(#arrow)"/>
+        <text class="flow-label" x="438" y="88">points</text>
+
+        <!-- RTOS bar -->
+        <rect class="blk-hw" x="16" y="214" width="828" height="26" rx="6"/>
+        <text class="blk-title-hw" x="430" y="231">REAL-TIME OS &middot; µT-KERNEL 3.0 &middot; FIXED PRIORITIES: CAMERA &gt; DISPLAY &gt; AI</text>
+      </svg>
+      <figcaption>
+        Only points and decisions move between stages; camera pictures stay
+        inside the chip.
+      </figcaption>
+      <div class="diagram-legend">
+        <span class="legend-item"><span class="legend-swatch built"></span>Built and measured on the board</span>
+        <span class="legend-item"><span class="legend-swatch planned"></span>Planned</span>
+        <span class="legend-item"><span class="legend-swatch hw"></span>Hardware / platform</span>
+      </div>
+    </figure>
+  </section>
+
+  <section>
+    <div class="section-label">Proof on silicon</div>
+    <h2>Measured on the EK-RA8P1, not estimated</h2>
+    <p class="lede">
+      Two working builds on a single Renesas RA8P1 with its Ethos-U55 NPU.
+      Every number below was measured on the board.
+    </p>
+    <div class="stat-strip">
+      <div class="stat-tile">
+        <div class="stat-num">12.9&times;</div>
+        <div class="stat-label">faster body tracking with the NPU than on the CPU alone</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-num">19 fps</div>
+        <div class="stat-label">skeleton updated on every camera frame, about 70% of frame time spare</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-num">2.61 tok/s</div>
+        <div class="stat-label">language model running alongside live camera and display</div>
+      </div>
+    </div>
+    <p class="tech-note" style="margin-top:14px;">
+      Pose inference 12 ms on the NPU vs. 155 ms CPU-only &middot; two NPU
+      models together use 1.2 MB of 1.9 MB on-chip SRAM &middot; no cloud
+      dependencies: images never leave the device.
+    </p>
+    <div class="cards">
+      <a class="card" href="/pose-estimation">
+        <span class="provision">Featured R&amp;D</span>
+        <h3>Real-time pose estimation</h3>
+        <p>A 17-point body skeleton from camera input, tracked on the device on every frame, with and without the NPU.</p>
+        <div class="why-line">See how it works &rarr;</div>
+      </a>
+      <a class="card" href="/conversational-hand-gestures">
+        <span class="provision">Featured R&amp;D</span>
+        <h3>Conversational hand gestures</h3>
+        <p>Hand-gesture recognition and an 8-bit language model on one chip, scheduled under µT-Kernel 3.0.</p>
+        <div class="why-line">See how it works &rarr;</div>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Where it fits</div>
+    <h2>Wherever a device needs to understand a person and act locally</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Care and safety</h3>
+        <p>Fall and stillness detection, unsafe-lifting alerts and bed-exit monitoring, with the camera picture kept on the device.</p>
+      </div>
+      <div class="card">
+        <h3>Fitness and rehabilitation</h3>
+        <p>Repetition counting, form checks and joint range measurement in a mirror, a home device or a clinic station.</p>
+      </div>
+      <div class="card">
+        <h3>Interactive devices</h3>
+        <p>Kiosks, displays and learning toys that respond to a wave, a raised arm or someone stepping closer.</p>
+      </div>
+      <div class="card">
+        <h3>Robots and machines</h3>
+        <p>An on-device perception front end that tells the motion system where people are and what they are signalling.</p>
+      </div>
+    </div>
+    <p class="tech-note" style="margin-top:16px;">
+      These are directions for this work, not shipped products. Each needs
+      its own application logic and testing.
+    </p>
+  </section>
+
+  <section>
+    <div class="section-label">How we work</div>
+    <h2>Start with a measured answer, then build</h2>
+    <p class="lede">
+      Each step has a clear scope and price agreed up front.
+    </p>
+    <div class="cards three">
+      <div class="card">
+        <span class="step">STEP 01</span>
+        <h3>Feasibility study</h3>
+        <p>2&ndash;6 weeks. Your perception model measured on the chip you chose, against your latency and memory targets.</p>
+      </div>
+      <div class="card">
+        <span class="step">STEP 02</span>
+        <h3>Feature project</h3>
+        <p>Perception, fusion and interaction firmware integrated with your RTOS and product, verified on your board with hardware-in-the-loop tests.</p>
+      </div>
+      <div class="card">
+        <span class="step">STEP 03</span>
+        <h3>Support retainer</h3>
+        <p>Annual. Model care, field performance monitoring and OTA updates that keep the feature working after launch.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta">
+    <span class="section-label">Start a conversation</span>
+    <h2>Building a device that needs to see and respond?</h2>
+    <p>
+      Tell us about your sensor, your chip and your timing targets. We'll
+      tell you what fits on the device, privately and in real time.
+    </p>
+    <a class="cta-btn" href="mailto:services@gnomons.com?subject=Physical%20AI%20Inquiry">
+      services@gnomons.com
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+function translateToJapanese() {
+  const url = "https://translate.google.com/translate?sl=auto&tl=ja&u=" + encodeURIComponent(window.location.href);
+  window.open(url, "_blank", "noopener");
+}
+</script>
+</body>
+</html>
